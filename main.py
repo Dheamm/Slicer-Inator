@@ -41,7 +41,7 @@ def select(input_text):
         except ValueError:
             print('Error! Debe ingresar un valor válido. Intente nuevamente.')
 
-archivo = Informe(RUTA_CLIPS, FORMATOS_CLIP)
+archivo = Informador(RUTA_CLIPS, FORMATOS_CLIP)
 archivo.obtener_resumen('crear_csv')
 
 #cortar = Cortar(RUTA_CLIPS, FORMATOS_CLIP, DURACION_CLIP)
