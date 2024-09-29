@@ -30,8 +30,8 @@ class Renamer(FileManager):
 
         return date_format
 
-    def get_value(self, value_type):
+    def get_module(self, module_type):
         '''Get the value of the methods.'''
-        if value_type == 'date':
+        if module_type == 'date':
             return self.__date_pattern(super().get_input_path())
         

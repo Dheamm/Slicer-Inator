@@ -30,38 +30,42 @@ class FileManager():
 
     def get_output_path(self):
         '''Get the output path.'''
-        return self.__create_output_path()
-    
+        return self.__create_output_path(self.get_input_path)
+
     def set_output_path(self, new_path):
         '''Set the output path.'''
         self.__output_path = new_path
 
-    def __file_list(self):
-        '''Get a list of clips in the selected path.'''
-        return listdir(self.__input_path)
+    def __files_list(self, path):
+        '''A list of files in the selected path.'''
+        return listdir(path)
 
-    def __valid_files(self):
-        '''Get the valid files.'''
-        valid_files = []
-        for file in self.__file_list(): # Get a name of one file.
-            for one_format in self.__video_formats:
+    def __valid_file(self, file_list, video_formats):
+        '''One valid file.'''
+        for file in file_list: # Get a name of one file.
+            for one_format in video_formats: 
                 if file.endswith(one_format): # Verify is the file has a valid format.
-                    valid_files.append(file) # Add the file to the valid_files list.
+                    return file
+
+    def __valid_files_list(self, file):
+        '''A list of all the valid files.'''
+        valid_files = []
+        valid_files.append(file) # Add the file to the valid_file list.
         return valid_files
 
-    def __create_output_path(self):
+    def __create_output_path(self, input_path, directory_name='Sliced'):
         '''Create the output path.'''
-        self.__output_path = join(self.get_input_path, 'Recortado') # Join the paths.
+        self.__output_path = join(input_path, directory_name) # Join the paths.
         makedirs(self.__output_path, exist_ok=True) # Create the directory if it doesn't exist.
         return self.__output_path
 
-    def get_values(self, value_type):
+    def get_method(self, method_type):
         '''Get the value of the methods.'''
-        if value_type == 'list':
-            print('\nFile list: ')
-            for i in self.__file_list():
-                print (f'- {i}')
-            print('')
+        if method_type == 'list':
+            return self.__files_list(self.get_input_path)
 
-        elif value_type == 'valid_files':
-            return self.__valid_files()
+        elif method_type == 'valid_file':
+            return self.__valid_file(self.get_method('list'), self.get_video_formats())
+
+        elif method_type == 'valid_files_list':
+            return self.__valid_files_list(self.get_method('valid_file'))

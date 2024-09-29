@@ -48,5 +48,5 @@ class Slicer(FileManager):
         if value_type == 'slice':
             self.__render(
                 self.__cut(
-                    super().get_input_path, super().get_values('valid_files'))
+                    super().get_input_path, super().get_method('valid_files'))
                     , 'José', '.mp4')

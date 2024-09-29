@@ -34,3 +34,10 @@ def select(input_text):
             return user_select
         except ValueError:
             print('Error! You must enter a valid value. Please try again.')
+
+
+def main():
+    '''Main function.'''
+    print('Welcome to the Slicer Inator!')
+
+
