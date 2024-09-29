@@ -12,6 +12,7 @@ import os # To clear the console.
 from time import sleep # To add cooldowns before clearing the console.
 
 # Local Classes:
+from Logic.Slicer import Slicer # Import Slicer local class.
 
 # Parameters:
 INPUT_PATH = r'C:\Users\Dheam\Videos\Prueba'
@@ -39,5 +40,12 @@ def select(input_text):
 def main():
     '''Main function.'''
     print('Welcome to the Slicer Inator!')
+    print('This program will cut and render video clips.')
 
+    # Create the Slicer object:
+    slicer = Slicer(INPUT_PATH, VIDEO_FORMATS, DURATION)
 
+    # Cut and render the clips:
+    slicer.get_method('render')
+
+main()

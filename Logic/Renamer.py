@@ -10,8 +10,8 @@ from Logic.FileManager import FileManager # Import FileManager local class.
 
 class Renamer(FileManager):
     '''Rename the files.'''
-    def __init__(self, file_name, input_path):
-        super().__init__(input_path)
+    def __init__(self, file_name, output_path, input_path):
+        super().__init__(input_path, output_path)
         self.__file_name = file_name
 
     def get_file_name(self):

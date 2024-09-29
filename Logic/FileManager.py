@@ -7,10 +7,10 @@ from os.path import join # To join paths.
 
 class FileManager():
     '''Get the list of files and handle them.'''
-    def __init__(self, input_path, video_formats=('.mp4'), output_path=None):
+    def __init__(self, input_path, output_path, video_formats=('.mp4')):
         self.__input_path = input_path
-        self.__video_formats = video_formats
         self.__output_path = output_path
+        self.__video_formats = video_formats
 
     def get_input_path(self):
         '''Get the path of the clips.'''
@@ -30,7 +30,7 @@ class FileManager():
 
     def get_output_path(self):
         '''Get the output path.'''
-        return self.__create_output_path(self.get_input_path)
+        return self.__create_output_path(self.get_input_path())
 
     def set_output_path(self, new_path):
         '''Set the output path.'''
@@ -38,11 +38,11 @@ class FileManager():
 
     def __files_list(self, path):
         '''A list of files in the selected path.'''
-        return listdir(path)
+        return listdir(path) # Get the list of files in the path.
 
-    def __valid_file(self, file_list, video_formats):
+    def __valid_file(self, files_list, video_formats):
         '''One valid file.'''
-        for file in file_list: # Get a name of one file.
+        for file in files_list: # Get a name of one file.
             for one_format in video_formats: 
                 if file.endswith(one_format): # Verify is the file has a valid format.
                     return file
@@ -62,10 +62,10 @@ class FileManager():
     def get_method(self, method_type):
         '''Get the value of the methods.'''
         if method_type == 'list':
-            return self.__files_list(self.get_input_path)
+            return self.__files_list(self.get_input_path())
 
         elif method_type == 'valid_file':
-            return self.__valid_file(self.get_method('list'), self.get_video_formats())
+            return self.__valid_file(self.__files_list(self.get_input_path()), self.get_video_formats())
 
         elif method_type == 'valid_files_list':
-            return self.__valid_files_list(self.get_method('valid_file'))
+            return self.__valid_files_list(self.__valid_file(self.__files_list(self.get_input_path()), self.get_video_formats()))
