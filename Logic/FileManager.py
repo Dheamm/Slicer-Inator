@@ -7,10 +7,10 @@ from os.path import join # To join paths.
 
 class FileManager():
     '''Get the list of files and handle them.'''
-    def __init__(self, input_path, output_path, video_formats=('.mp4')):
+    def __init__(self, input_path, video_formats, output_path=None):
         self.__input_path = input_path
-        self.__output_path = output_path
         self.__video_formats = video_formats
+        self.__output_path = output_path
 
     def get_input_path(self):
         '''Get the path of the clips.'''

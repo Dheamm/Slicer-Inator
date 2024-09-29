@@ -9,8 +9,8 @@ from Logic.FileManager import FileManager #Import FileManager local class.
 
 class Slicer(FileManager):
     '''Cut and render the video clips.'''
-    def __init__(self, input_path, output_path, duration):
-        super().__init__(input_path, output_path)
+    def __init__(self, input_path, video_formats, duration):
+        super().__init__(input_path, video_formats)
         self.__duration = duration
 
     def get_duration(self):
@@ -48,4 +48,4 @@ class Slicer(FileManager):
             return self.__cut(super().get_method('valid_file'), self.get_duration())
 
         elif method_type == 'render':
-            return self.__render(self.get_method('cut'), 'test', '.mp4')
+            return self.__render(self.__cut(super().get_method('valid_file'), self.get_duration()), 'test', '.mp4')

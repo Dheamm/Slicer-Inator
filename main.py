@@ -12,6 +12,7 @@ import os # To clear the console.
 from time import sleep # To add cooldowns before clearing the console.
 
 # Local Classes:
+from Logic.FileManager import FileManager # Import FileManager local class.
 from Logic.Slicer import Slicer # Import Slicer local class.
 
 # Parameters:
@@ -45,7 +46,14 @@ def main():
     # Create the Slicer object:
     slicer = Slicer(INPUT_PATH, VIDEO_FORMATS, DURATION)
 
-    # Cut and render the clips:
-    slicer.get_method('render')
+    try:
+        # Render the clip:
+        slicer.get_method('render')
+        print('The clip has been rendered.')
 
+    except TypeError: # Empty directory or invalid videos.
+        print('Error! The directory is empty or has not valid videos.')
+
+    except OSError: # File Corrupted.
+        print('Error! The clip could not be rendered.')
 main()
