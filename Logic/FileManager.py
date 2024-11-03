@@ -40,17 +40,13 @@ class FileManager():
         '''A list of files in the selected path.'''
         return listdir(path) # Get the list of files in the path.
 
-    def __valid_file(self, files_list, video_formats):
-        '''One valid file.'''
-        for file in files_list: # Get a name of one file.
-            for one_format in video_formats: 
-                if file.endswith(one_format): # Verify is the file has a valid format.
-                    return file
-
-    def __valid_files_list(self, file):
+    def __valid_files_list(self, file_list, video_formats):
         '''A list of all the valid files.'''
         valid_files = []
-        valid_files.append(file) # Add the file to the valid_file list.
+        for file in file_list:
+            for one_format in video_formats:
+                if file.endswith(one_format): # Verify is the file has a valid format.
+                    valid_files.append(file) # Add the file to the valid_file list.
         return valid_files
 
     def __create_output_path(self, input_path, directory_name='Sliced'):
@@ -64,8 +60,8 @@ class FileManager():
         if method_type == 'list':
             return self.__files_list(self.get_input_path())
 
-        elif method_type == 'valid_file':
-            return self.__valid_file(self.__files_list(self.get_input_path()), self.get_video_formats())
-
         elif method_type == 'valid_files_list':
-            return self.__valid_files_list(self.__valid_file(self.__files_list(self.get_input_path()), self.get_video_formats()))
+            return self.__valid_files_list(self.get_method('list'), self.get_video_formats())
+
+        else:
+            print('Error! The method is not valid.')
