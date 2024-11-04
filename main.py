@@ -13,10 +13,13 @@ from sys import stdout # To overwrite a line in console.
 import os # To clear the console.
 from time import sleep # To add cooldowns before clearing the console.
 from time import time # To measure the time of the process.
+from PyQt5.QtWidgets import QApplication # To create the interface application.
 
 # Local Classes:
 from Logic.FileManager import FileManager # Import FileManager local class.
 from Logic.Slicer import Slicer # Import Slicer local class.
+from Interface.MainWindow import MainWindow # Import MainWindow local class.
+from Interface.RenderWindow import RenderWindow # Import RenderWindow local class.
 
 # Parameters:
 INPUT_PATH = r'C:\Users\Dheam\Videos\Prueba'
@@ -103,4 +106,13 @@ def main():
 
     except OSError: # File Corrupted.
         print('Error! The clip could not be rendered.')
-main()
+
+app = QApplication([])  # Create the application.
+render_window = RenderWindow() # Create the RenderWindow object.
+
+interface = MainWindow() # Create the GraphicInterface object.
+interface.main_window(render_window.render_window()) # Show the window.
+
+app.exec_()  # Execute the event loop.
+
+
