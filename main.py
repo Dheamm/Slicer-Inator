@@ -1,7 +1,7 @@
 '''
 Prepared by: Ítalo Osorio
 Date of creation: 06/06/2024
-Last modification: 03/11/2024
+Last modification: 04/11/2024
 
 Purpose: Refactor the video cutter script “Slicer Inator.py” in classes and methods.
 PS: My first “POO” test in Python :D!
@@ -14,6 +14,7 @@ import os # To clear the console.
 from time import sleep # To add cooldowns before clearing the console.
 from time import time # To measure the time of the process.
 from PyQt5.QtWidgets import QApplication # To create the interface application.
+from sys import exit # To close the application.
 
 # Local Classes:
 from Logic.FileManager import FileManager # Import FileManager local class.
@@ -108,11 +109,12 @@ def main():
         print('Error! The clip could not be rendered.')
 
 app = QApplication([])  # Create the application.
-render_window = RenderWindow() # Create the RenderWindow object.
+
+render = RenderWindow() # Create the RenderWindow object.
 
 interface = MainWindow() # Create the GraphicInterface object.
-interface.main_window(render_window.render_window()) # Show the window.
+interface.main_window(render.render_window) # Show the window.
 
-app.exec_()  # Execute the event loop.
+exit(app.exec_())  # Execute the event loop.
 
 

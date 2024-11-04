@@ -11,12 +11,7 @@ class MainWindow(QMainWindow):
         self.setFixedSize(width, height) # Set fixed size
         self.setStyleSheet(f"background-color: {color};")
 
-    def hide_last_window(self, new_window):
-        self.hide() # Hide the last window
-
-        return new_window
-
-    def main_window(self, click_start):
+    def main_window(self, start):
         self.window_parameters()
 
         central_widget = QWidget(self)
@@ -31,6 +26,7 @@ class MainWindow(QMainWindow):
         btn_start = QPushButton("Start", self)
         btn_start.setStyleSheet("background-color: lightblue; font-weight: bold; font-size: 16px;")
         btn_start.setGeometry(155, 100, 200, 50)
-        btn_start.clicked.connect(lambda: self.hide_last_window(click_start))
+        btn_start.clicked.connect(start) # Start the new window.
+        btn_start.clicked.connect(self.hide) # Hide last window.
 
         self.show() # Show the window
