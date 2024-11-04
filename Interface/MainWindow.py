@@ -29,4 +29,10 @@ class MainWindow(QMainWindow):
         btn_start.clicked.connect(start) # Start the new window.
         btn_start.clicked.connect(self.hide) # Hide last window.
 
+        # Exit Button:
+        btn_exit = QPushButton("Exit", self)
+        btn_exit.setStyleSheet("background-color: lightcoral; font-weight: bold; font-size: 16px;")
+        btn_exit.setGeometry(230, 160, 50, 30)
+        btn_exit.clicked.connect(self.close)
+
         self.show() # Show the window
