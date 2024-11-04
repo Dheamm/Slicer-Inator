@@ -1,9 +1,20 @@
-import sys
-from PyQt5.QtWidgets import QMainWindow, QLabel, QPushButton, QWidget
+'''Module for the main window of the application. 
+This module is responsible to create the main window of the application and start the render thread.'''
+
+# Libraries:
+from PyQt5.QtWidgets import QMainWindow # To create the main window.
+from PyQt5.QtWidgets import QLabel # To create labels.
+from PyQt5.QtWidgets import QPushButton # To create buttons.
+from PyQt5.QtWidgets import QWidget # To create widgets.
+
+# Local Classes:
+from Threads.RenderThread import RenderThread # Import RenderThread local class.
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, file_manager, slicer):
         super().__init__()
+        self.file_manager = file_manager
+        self.slicer = slicer
 
     def window_parameters(self, title="Slicer Inator", width=500, height=250, color='lightgrey'):
         '''Set the window parameters.'''
@@ -11,7 +22,7 @@ class MainWindow(QMainWindow):
         self.setFixedSize(width, height) # Set fixed size
         self.setStyleSheet(f"background-color: {color};")
 
-    def main_window(self, start):
+    def main_window(self, new_window):
         self.window_parameters()
 
         central_widget = QWidget(self)
@@ -26,8 +37,9 @@ class MainWindow(QMainWindow):
         btn_start = QPushButton("Start", self)
         btn_start.setStyleSheet("background-color: lightblue; font-weight: bold; font-size: 16px;")
         btn_start.setGeometry(155, 100, 200, 50)
-        btn_start.clicked.connect(start) # Start the new window.
         btn_start.clicked.connect(self.hide) # Hide last window.
+        btn_start.clicked.connect(new_window) # Start the new window.
+        btn_start.clicked.connect(self.start_render_thread)
 
         # Exit Button:
         btn_exit = QPushButton("Exit", self)
@@ -36,3 +48,8 @@ class MainWindow(QMainWindow):
         btn_exit.clicked.connect(self.close)
 
         self.show() # Show the window
+
+    def start_render_thread(self):
+        '''Start the render thread.'''
+        self.render_thread = RenderThread(self.slicer, self.file_manager)
+        self.render_thread.start()
