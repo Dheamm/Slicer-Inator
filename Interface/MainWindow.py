@@ -7,23 +7,20 @@ from PyQt5.QtWidgets import QLabel # To create labels.
 from PyQt5.QtWidgets import QPushButton # To create buttons.
 from PyQt5.QtWidgets import QWidget # To create widgets.
 
-# Local Classes:
-from Threads.RenderThread import RenderThread # Import RenderThread local class.
-
 class MainWindow(QMainWindow):
     def __init__(self, file_manager, slicer):
         super().__init__()
         self.file_manager = file_manager
         self.slicer = slicer
 
-    def window_parameters(self, title="Slicer Inator", width=500, height=250, color='lightgrey'):
+    def window_parameters(self, title, color, width=500, height=250):
         '''Set the window parameters.'''
         self.setWindowTitle(title) # Set the window title
         self.setFixedSize(width, height) # Set fixed size
         self.setStyleSheet(f"background-color: {color};")
 
     def main_window(self, new_window):
-        self.window_parameters()
+        self.window_parameters("Slicer Inator", 'lightgrey', 500, 250)
 
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)      
@@ -39,7 +36,7 @@ class MainWindow(QMainWindow):
         btn_start.setGeometry(155, 100, 200, 50)
         btn_start.clicked.connect(self.hide) # Hide last window.
         btn_start.clicked.connect(new_window) # Start the new window.
-        btn_start.clicked.connect(self.start_render_thread)
+        # btn_start.clicked.connect(self.start_render_thread)
 
         # Exit Button:
         btn_exit = QPushButton("Exit", self)
@@ -48,8 +45,3 @@ class MainWindow(QMainWindow):
         btn_exit.clicked.connect(self.close)
 
         self.show() # Show the window
-
-    def start_render_thread(self):
-        '''Start the render thread.'''
-        self.render_thread = RenderThread(self.slicer, self.file_manager)
-        self.render_thread.start()
