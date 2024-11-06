@@ -10,14 +10,13 @@ PS: My first “POO” test in Python :D!
 # Libraries:
 import os # To clear the console.
 from time import sleep # To add cooldowns before clearing the console.
-from PyQt5.QtWidgets import QApplication # To create the interface application.
 from sys import exit # To close the application.
+from PyQt5.QtWidgets import QApplication # To create the interface application.
 
 # Local Classes:
 from Logic.FileManager import FileManager # Import FileManager local class.
 from Logic.Slicer import Slicer # Import Slicer local class.
-from Interface.MainWindow import MainWindow # Import MainWindow local class.
-from Interface.RenderWindow import RenderWindow # Import RenderWindow local class.
+from Interface.WindowsController import WindowsController # Import WindowsController local class.
 
 # Parameters:
 INPUT_PATH = r'C:\Users\Dheam\Videos\Prueba'
@@ -48,10 +47,9 @@ def start_application():
 
     # Interface:
     app = QApplication([]) # Create the application to show the interface.
-    render_win = RenderWindow(file_manager, slicer) # Instance of RenderWindow
-    interface = MainWindow(file_manager, slicer) # Instance of MainWindow
+    interface = WindowsController(file_manager, slicer) # Instance of MainWindow
 
-    interface.main_window(render_win.render_window) # Show the window with a parameter of RenderWindow.
+    interface.execute_main_window() # Show the window with a parameter of RenderWindow.
     exit(app.exec_()) # Execute the event loop.
 
 start_application()

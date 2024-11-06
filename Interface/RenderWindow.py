@@ -1,24 +1,24 @@
 '''Module responsible to show the render window.'''
 
 # Libraries:
-from PyQt5.QtWidgets import QMainWindow # To create the main window.
 from PyQt5.QtWidgets import QLabel # To create labels.
-from PyQt5.QtWidgets import QPushButton # To create buttons.
-from PyQt5.QtWidgets import QWidget # To create widgets.
 from PyQt5.QtWidgets import QProgressBar # To create progress bars.
-from PyQt5.QtCore import pyqtSignal
-from time import sleep # To add cooldowns in the progress bar.
 
 # Local Classes:
-from Interface.MainWindow import MainWindow # Import MainWindow local class.
+from Interface.Window import Window # Import Window local class.
 from Threads.RenderThread import RenderThread # Import RenderThread local class.
-from Threads.ProgressThread import ProgressThread # Import ProgressThread local class.s
+from Threads.ProgressThread import ProgressThread # Import ProgressThread local class.
 
-class RenderWindow(MainWindow):
+class RenderWindow(Window):
     def __init__(self, file_manager, slicer):
-        super().__init__(file_manager, slicer)
+        super().__init__()
+        self.file_manager = file_manager
+        self.slicer = slicer
 
-    def render_window(self):
+    def set_controller(self, controller):
+        self.controller = controller
+
+    def open(self):
         super().window_parameters('Render', 'lightblue', 500, 250)
 
         # Title Label:
@@ -31,7 +31,20 @@ class RenderWindow(MainWindow):
         self.pb_progress.setGeometry(100, 100, 300, 50)
         self.pb_progress.setRange(0, 100)
 
-        self.start_rendering()
+        # Buttons:
+        btn_go = self.button_config('▶', 'green', 'Arial', 30, tooltip_text='Go')
+        btn_go.setGeometry(100, 160, 30, 30)
+
+        btn_stop = self.button_config('■', 'lightcoral', 'Arial', 30, tooltip_text='Stop')
+        btn_stop.setGeometry(155, 160, 30, 30)
+
+        btn_exit = self.button_config('Exit', 'lightcoral', 'Arial', 12, tooltip_text='Exit')
+        btn_exit.setGeometry(210, 160, 50, 30)
+        btn_exit.clicked.connect(self.close)
+        btn_exit.clicked.connect(self.controller.execute_main_window)
+
+
+        # self.start_rendering()
 
         self.show()
 
