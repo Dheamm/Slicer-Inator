@@ -10,7 +10,7 @@ from time import sleep # To add cooldowns in the progress bar.
 class RenderThread(QThread):
     signal_render = pyqtSignal(int)
 
-    def __init__(self, file_manager, slicer, progress_bar):
+    def __init__(self, file_manager, slicer, progress_bar, execute_flag=True):
         super().__init__()
         self.file_manager = file_manager
         self.slicer = slicer
