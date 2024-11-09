@@ -2,23 +2,19 @@
 
 # Libraries:
 from os.path import getmtime # To get the time stamp of the file.
+from os import rename # To rename the file.
 from datetime import datetime # To format the date.
 
-# Local Classes:
-from Logic.FileManager import FileManager # Import FileManager local class.
-
-
-class Renamer(FileManager):
+class Renamer():
     '''Rename the files.'''
-    def __init__(self, file_name, output_path, input_path):
-        super().__init__(input_path, output_path)
-        self.__file_name = file_name
+    def __init__(self, input_name):
+        self.__input_name = input_name
 
-    def get_file_name(self):
+    def get_input_name(self):
         '''Get the file name.'''
-        return self.__file_name
+        return self.__input_name
 
-    def set_file_name(self, new_name):
+    def set_input_name(self, new_name):
         '''Set the file name.'''
         self.__file_name = new_name
 
@@ -29,9 +25,10 @@ class Renamer(FileManager):
         date_format = date.strftime('%Y.%m.%d %H.%M') # Format the date.
 
         return date_format
+    
+    def __name_format(self):
+        '''Get the name format.'''
 
-    def get_module(self, module_type):
-        '''Get the value of the methods.'''
-        if module_type == 'date':
-            return self.__date_pattern(super().get_input_path())
-        
+    def rename_file(self):
+        '''Rename the file.'''
+        pass
