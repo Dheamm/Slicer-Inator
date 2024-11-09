@@ -31,7 +31,7 @@ class MainWindow(Window):
 
         # Start Button:
         btn_start = QPushButton("Start", self)
-        btn_start.setStyleSheet("background-color: lightblue; font-weight: bold; font-size: 16px;")
+        btn_start.setStyleSheet("text-align: center; lightblue; background-color: lightblue; font-weight: bold; font-size: 16px;")
         btn_start.setGeometry(155, 100, 200, 50)
         btn_start.clicked.connect(self.close) # Hide last window.
         btn_start.clicked.connect(self.controller.execute_render_window) # Start the new window.

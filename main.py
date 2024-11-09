@@ -53,3 +53,9 @@ def start_application():
     exit(app.exec_()) # Execute the event loop.
 
 start_application()
+
+# Todo: Configurar Reporter
+# Todo: Configurar Renamer
+# Todo: Al usar el boton back durante el proceso de renderizado no pasa lo que esperarias.
+# Todo: Agregar un boton pause que permita reanudar el proceso de renderizado.
+# Todo: Una vez el programa ya ha rendirazo todos los clips, al volver al menu y luego volver a la renderwindow, el progressbar se queda en 100.
