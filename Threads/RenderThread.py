@@ -5,6 +5,10 @@ from PyQt5.QtCore import QThread # To create threads.
 from PyQt5.QtCore import pyqtSignal # Emit signals to update the progress bar.
 from time import time # To measure the time of the render process.
 from time import sleep # To add cooldowns in the progress bar.
+from os.path import join # To join the paths.
+
+# Local Classes:
+from Logic.Renamer import Renamer # Import Renamer local class.
 
 
 class RenderThread(QThread):
@@ -20,6 +24,7 @@ class RenderThread(QThread):
         try:
             for index, file in enumerate(self.file_manager.get_method('valid_files_list')):
                 index += 1
+                renamer = Renamer(file, index)
 
                 self.signal_render.emit(0)
                 self.signal_render.emit(1)
@@ -32,7 +37,8 @@ class RenderThread(QThread):
                 self.signal_render.emit(self.progress_bar.value() + 15)
 
                 start = time()
-                self.slicer.render(cut, (f'Sliced_{index}'), '.mp4', self.file_manager.get_output_path())
+                file_path = join(self.file_manager.get_input_path() + '\\' + file)
+                self.slicer.render(cut, (renamer.rename_file(file_path)), '.mp4', self.file_manager.get_output_path())
                 end = time()
                 print(f'Time: {int(end - start)} seconds.\n')
 
