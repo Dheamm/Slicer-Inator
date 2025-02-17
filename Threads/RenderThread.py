@@ -9,6 +9,7 @@ from os.path import join # To join the paths.
 
 # Local Classes:
 from Logic.Renamer import Renamer # Import Renamer local class.
+from Logic.Reporter import Reporter # Import Reporter local class.
 
 
 class RenderThread(QThread):
@@ -22,6 +23,8 @@ class RenderThread(QThread):
 
     def run(self):
         try:
+            reporter = Reporter(self.file_manager.get_output_path())
+            reporter.file_creation()
             for index, file in enumerate(self.file_manager.get_method('valid_files_list')):
                 index += 1
                 renamer = Renamer(file, index)
@@ -37,16 +40,23 @@ class RenderThread(QThread):
                 self.signal_render.emit(self.progress_bar.value() + 15)
 
                 start = time()
-                file_path = join(self.file_manager.get_input_path() + '\\' + file)
-                self.slicer.render(cut, (renamer.rename_file(file_path)), '.mp4', self.file_manager.get_output_path())
+                file_path = join(self.file_manager.get_input_path() + '\\' + file) 
+                new_name = renamer.rename_file(file_path)
+                self.slicer.render(cut, (new_name), '.mp4', self.file_manager.get_output_path())
                 end = time()
-                print(f'Time: {int(end - start)} seconds.\n')
+                total_time = int(end - start)
+                print(f'Time: {total_time} seconds.\n')
+
+                reporter.file_update(file, new_name, renamer.game_pattern(), renamer.date_pattern(file_path), index, total_time)
 
                 self.signal_render.emit(100)
                 sleep(2)
 
-        except TypeError:
+        except TypeError as error:
             print('Error! The directory is empty or has not valid videos.')
-        except OSError:
+            print(f'Error: {error}')
+        except OSError as error:
             print('Error! The clip could not be rendered.')
+            print(f'Error: {error}')
+
 

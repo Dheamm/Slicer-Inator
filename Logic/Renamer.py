@@ -26,7 +26,7 @@ class Renamer():
         '''Set the index of the clip.'''
         self.__clip_index = new_index
 
-    def __date_pattern(self, file_path):
+    def date_pattern(self, file_path):
         '''Get the date pattern of the file.'''
         time_stamp = getmtime(file_path) # Get the 'unix' time stamp of the file.
         date = datetime.fromtimestamp(time_stamp) # Convert the time stamp to a date.
@@ -34,13 +34,13 @@ class Renamer():
 
         return date_format
     
-    def __game_pattern(self):
+    def game_pattern(self):
         '''Get the game of the file name.'''
         return self.get_input_name().split(' - ')[0]
     
     def rename_file(self, file_path):
         '''Rename the file.'''
-        game = self.__game_pattern()
-        date = self.__date_pattern(file_path)
+        game = self.game_pattern()
+        date = self.date_pattern(file_path)
         index = self.get_clip_index()
         return (f'{game} - {date} - Clip_{index}') # Rename the file.

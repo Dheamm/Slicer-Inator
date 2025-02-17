@@ -1,7 +1,7 @@
 '''
 Prepared by: Ítalo Osorio
 Date of creation: 06/06/2024
-Last modification: 04/11/2024
+Last modification: 17/02/2025
 
 Purpose: Refactor the video cutter script “Slicer Inator.py” in classes and methods.
 PS: My first “POO” test in Python :D!
@@ -54,9 +54,11 @@ def start_application():
 
 start_application()
 
-# Todo: Configurar Reporter
+# Todo: Configurar opcion de borrar el video original y agregarlo esa info al reporter.
+# Todo: Hacer que al crear el csv se borre si hay uno anterior o al menos que se reescriba (Solo al crear, no al llenar info)
 # Todo: Seleccionar el nombre del juego segun el nombre del clip
 # Todo: Al usar el boton back durante el proceso de renderizado no pasa lo que esperarias.
 # Todo: Agregar un boton pause que permita reanudar el proceso de renderizado.
 # Todo: Una vez el programa ya ha rendirazo todos los clips, al volver al menu y luego volver a la renderwindow, el progressbar se queda en 100.
 # Todo: Borrar archivo temporal que se crea al parar el render.
+# Todo: A veces se inicia la barra de render cuando el renderthread da error
