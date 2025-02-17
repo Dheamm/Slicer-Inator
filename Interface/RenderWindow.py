@@ -14,6 +14,8 @@ class RenderWindow(Window):
         super().__init__()
         self.file_manager = file_manager
         self.slicer = slicer
+        self.render_thread = None
+        self.progress_thread = None
 
     def set_controller(self, controller):
         self.controller = controller
@@ -47,9 +49,10 @@ class RenderWindow(Window):
         btn_exit.clicked.connect(self.stop_rendering)
         btn_exit.clicked.connect(self.controller.execute_main_window)
 
-        # self.start_rendering()
-
         self.show()
+
+    def info(self):
+        pass
 
     def start_rendering(self):
         # Instances of the threads
@@ -65,8 +68,9 @@ class RenderWindow(Window):
         self.progress_thread.start()
 
     def stop_rendering(self):
-        self.render_thread.terminate()
-        self.progress_thread.terminate()
+        if self.render_thread and self.progress_thread != None:
+            self.render_thread.terminate()
+            self.progress_thread.terminate()
         self.update_progress(0)
 
     def update_progress(self, value):
