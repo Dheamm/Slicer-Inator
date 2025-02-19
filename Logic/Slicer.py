@@ -47,6 +47,7 @@ class Slicer():
                                     ffmpeg_params=["-vcodec", "h264_nvenc"],
                                     bitrate="16000k",
                                     logger=None, # or 'bar' to display a progress bar.
+                                    remove_temp=True # Remove the temporary file.
                                     )
         
         slice_clip.close() # Close the clip.

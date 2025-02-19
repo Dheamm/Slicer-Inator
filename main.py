@@ -56,8 +56,11 @@ start_application()
 
 # Todo: Manejar videos corrompidos y saltarselos. ✔️
 # Todo: Hacer que la barra de progreso no avance si el video no se pudo cortar. ✔️
-# Todo: Configurar opcion de borrar el video original y agregarlo esa info al reporter. ✔️
+# Todo: Configurar opcion de borrar el video original  ✔️
 
+
+# Todo: Agregar un boton para ir a la carpeta de salida y entrada y tambien abrir el reporte.
+# Todo: agregarlo esa info al reporter sobre de si el video original fue borrado.
 # Todo: Que los mensajes aparezcan en la interfaz y no en la consola.
 # Todo: Mejorar la interfaz grafica.
 # Todo: Agregar un boton de pausa.

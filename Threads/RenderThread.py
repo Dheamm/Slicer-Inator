@@ -51,7 +51,11 @@ class RenderThread(QThread):
                     total_time = int(end - start)
                     print(f'Time: {total_time} seconds.\n')
 
-                    reporter.file_update(file, new_name, renamer.game_pattern(), renamer.date_pattern(file_path), index, total_time)
+                    total, used, free = self.file_manager.get_method('disk_space')
+
+                    reporter.file_update(file, new_name, renamer.game_pattern(), 
+                                        renamer.date_pattern(file_path), index, total_time,
+                                        total, used, free)
 
                     if self.btn_toggle_delete.isChecked():
                         self.file_manager.delete_original_files()

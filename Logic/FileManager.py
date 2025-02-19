@@ -5,6 +5,9 @@ from os import listdir # To read the files from a path.
 from os import makedirs # To make directories.
 from os.path import join # To join paths.
 from os import remove # To delete files.
+from os.path import splitdrive # To get the drive letter.
+from shutil import disk_usage # To get the disk space.
+
 
 class FileManager():
     '''Get the list of files and handle them.'''
@@ -66,6 +69,28 @@ class FileManager():
             file_path = join(self.get_input_path(), file)
             remove(file_path)
 
+    def get_drive(self, input_path):
+        '''Return the drive letter of the specified path.'''
+        try:
+            drive, _ = splitdrive(input_path)
+        except ValueError:
+            drive = None
+        
+        return drive
+    
+    def __disk_space(self, drive):
+        """Show the total, used and free disk space in GB."""
+        try:
+            total, used, free = disk_usage(f"{drive}/")
+        
+            return (
+                round(total / (1024**3), 1),
+                round(used / (1024**3), 1),
+                round(free / (1024**3), 1)
+                    )
+        except FileNotFoundError:
+            return "Unknown Drive", 0, 0
+
     def get_method(self, method_type):
         '''Get the value of the methods.'''
         if method_type == 'list':
@@ -73,6 +98,9 @@ class FileManager():
 
         elif method_type == 'valid_files_list':
             return self.__valid_files_list(self.get_method('list'), self.get_video_formats())
+        
+        elif method_type == 'disk_space':
+            return self.__disk_space(self.get_drive(self.get_input_path()))
 
         else:
             print('Error! The method is not valid.')
