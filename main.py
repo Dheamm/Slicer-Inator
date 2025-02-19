@@ -1,7 +1,7 @@
 '''
 Prepared by: Ítalo Osorio
 Date of creation: 06/06/2024
-Last modification: 18/02/2025
+Last modification: 19/02/2025
 
 Purpose: Refactor the video cutter script “Slicer Inator.py” in classes and methods.
 PS: My first “POO” test in Python :D!
@@ -54,13 +54,17 @@ def start_application():
 
 start_application()
 
+#Completed tasks:
 # Todo: Manejar videos corrompidos y saltarselos. ✔️
 # Todo: Hacer que la barra de progreso no avance si el video no se pudo cortar. ✔️
 # Todo: Configurar opcion de borrar el video original  ✔️
+# Todo: El reporter tiene el uso del disco.✔️
+# Todo: agregar info al reporter sobre de si el video original fue borrado.✔️
 
-
+# Pending tasks:
+# Todo: Que te muestre los clips totales en la interfaz que quedan y los que llevas
 # Todo: Agregar un boton para ir a la carpeta de salida y entrada y tambien abrir el reporte.
-# Todo: agregarlo esa info al reporter sobre de si el video original fue borrado.
+# Todo: Si se da la casualidad de que hayan dos archivos con el mismo nombre en la carpeta de salida, se sobreescribiran, hacer que aparezca en el nombre (2) o algo así.
 # Todo: Que los mensajes aparezcan en la interfaz y no en la consola.
 # Todo: Mejorar la interfaz grafica.
 # Todo: Agregar un boton de pausa.
@@ -73,3 +77,4 @@ start_application()
 # Todo: Una vez el programa ya ha rendirazo todos los clips, al volver al menu y luego volver a la renderwindow, el progressbar se queda en 100.
 # Todo: Borrar archivo temporal que se crea al parar el render.
 # Todo: A veces se inicia la barra de render cuando el renderthread da error
+# Todo: Hacer una opcion para convertir los videos en mp3 ideal para la musica o liberar aun mas espacio.

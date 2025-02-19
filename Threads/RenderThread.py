@@ -4,7 +4,6 @@
 from PyQt5.QtCore import QThread # To create threads.
 from PyQt5.QtCore import pyqtSignal # Emit signals to update the progress bar.
 from time import time # To measure the time of the render process.
-from time import sleep # To add cooldowns in the progress bar.
 from os.path import join # To join the paths.
 
 # Local Classes:
@@ -53,12 +52,12 @@ class RenderThread(QThread):
 
                     total, used, free = self.file_manager.get_method('disk_space')
 
-                    reporter.file_update(file, new_name, renamer.game_pattern(), 
-                                        renamer.date_pattern(file_path), index, total_time,
-                                        total, used, free)
+                    # Update the report file.
+                    reporter.file_update(clip_number=index, original_name=file, delete_original=self.btn_toggle_delete.isChecked(),
+                    renamed=new_name, game=renamer.game_pattern(), date=renamer.date_pattern(file_path), 
+                    time=total_time, total_disk=total, used_disk=used, free_disk=free)
 
-                    if self.btn_toggle_delete.isChecked():
-                        self.file_manager.delete_original_files()
+
 
                 except OSError as error:
                     print(f'Error! The clip {index} could not be rendered.')
@@ -68,7 +67,8 @@ class RenderThread(QThread):
                     continue
 
                 self.signal_render.emit(100)
-                sleep(2)
+                if self.btn_toggle_delete.isChecked():
+                    self.file_manager.delete_original_files(file)
 
         except TypeError as error:
             print('Error! The directory is empty or has not valid videos.')

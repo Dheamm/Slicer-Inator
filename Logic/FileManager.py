@@ -63,11 +63,10 @@ class FileManager():
         makedirs(self.__output_path, exist_ok=True) # Create the directory if it doesn't exist.
         return self.__output_path
     
-    def delete_original_files(self):
+    def delete_original_files(self, file):
         '''Delete the original files.'''
-        for file in self.get_method('valid_files_list'):
-            file_path = join(self.get_input_path(), file)
-            remove(file_path)
+        file_path = join(self.get_input_path(), file)
+        remove(file_path)
 
     def get_drive(self, input_path):
         '''Return the drive letter of the specified path.'''

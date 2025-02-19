@@ -29,11 +29,11 @@ class Reporter():
         '''Create the summary file.'''
         if not path.exists(fr'{self.get_output_path()}\{self.get_file_name()}'): # Verify if the file exists.
             file = open(fr'{self.get_output_path()}\{self.get_file_name()}', 'a', encoding='utf-8') # The file is created.
-            file.write('original name,renamed,game,date,num,render time (sec),total disk(GB),used(GB),free(GB)\n'.upper()) # The columns of the file are created.
+            file.write('num, original name,delete original,renamed,game,date,render time (sec),total disk(GB),used(GB),free(GB)\n'.upper()) # The columns of the file are created.
             #deleted original,slicer procces
             file.close()
 
-    def file_update(self, original_name, renamed, game, date, clip_number, time, total, used, free):
+    def file_update(self, clip_number, original_name, delete_original, renamed, game, date, time, total_disk, used_disk, free_disk):
         '''Update the summary file.'''
         file = open(fr'{self.get_output_path()}\{self.get_file_name()}', 'a', encoding='utf-8') # The file is opened.
-        file.write(f'{original_name},{renamed}.mp4,{game},{date},{clip_number},{time},{total},{used},{free}\n')
+        file.write(f'{clip_number},{original_name},{delete_original},{renamed}.mp4,{game},{date},{time},{total_disk},{used_disk},{free_disk}\n')

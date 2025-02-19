@@ -84,7 +84,7 @@ class RenderWindow(Window):
         self.progress_thread.start()
 
     def handle_render_error(self):
-        print("Error detectado: Deteniendo ProgressThread.")
+        print("Error! Stopping ProgressThread.")
         self.stop_rendering()
 
 
