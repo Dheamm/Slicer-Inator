@@ -35,9 +35,9 @@ class RenderWindow(Window):
         self.pb_progress.setStyleSheet("border: 2px solid #2196F3; border-radius: 5px; background-color: #E0E0E0;")
 
         # Buttons:
-        btn_go = self.button_config('▶', 'green', 'Arial', 30, tooltip_text='Go')
-        btn_go.setGeometry(100, 160, 30, 30)
-        btn_go.clicked.connect(self.start_rendering)
+        self.btn_go = self.button_config('▶', 'green', 'Arial', 30, tooltip_text='Go')
+        self.btn_go.setGeometry(100, 160, 30, 30)
+        self.btn_go.clicked.connect(self.start_rendering)
 
         btn_stop = self.button_config('■', 'lightcoral', 'Arial', 30, tooltip_text='Stop')
         btn_stop.setGeometry(155, 160, 30, 30)
@@ -49,28 +49,52 @@ class RenderWindow(Window):
         btn_exit.clicked.connect(self.stop_rendering)
         btn_exit.clicked.connect(self.controller.execute_main_window)
 
+        self.btn_toggle_delete = self.button_config('Delete: OFF', 'lightcoral', 'Arial', 12, tooltip_text='Delete original video')
+        self.btn_toggle_delete.setGeometry(270, 160, 120, 30)
+        self.btn_toggle_delete.setCheckable(True)
+        self.btn_toggle_delete.clicked.connect(self.change_toggle_delete)
+
+
         self.show()
+
+    def change_toggle_delete(self):
+        if self.btn_toggle_delete.isChecked():
+            self.btn_toggle_delete.setText('Delete: ON')
+        else:
+            self.btn_toggle_delete.setText('Delete: OFF')
 
     def info(self):
         pass
 
     def start_rendering(self):
+        self.btn_toggle_delete.setEnabled(False)
+        self.btn_go.setEnabled(False)
+
         # Instances of the threads
-        self.render_thread = RenderThread(self.file_manager, self.slicer, self.pb_progress)
+        self.render_thread = RenderThread(self.file_manager, self.slicer, self.pb_progress, self.btn_toggle_delete, self.btn_go)
         self.progress_thread = ProgressThread(self.pb_progress)
 
         # Connect the signals
         self.render_thread.signal_render.connect(self.update_progress)
         self.progress_thread.signal_progress.connect(self.update_progress)
+        self.render_thread.signal_status.connect(self.handle_render_error)
         
         # Start the threads
         self.render_thread.start()
         self.progress_thread.start()
 
+    def handle_render_error(self):
+        print("Error detectado: Deteniendo ProgressThread.")
+        self.stop_rendering()
+
+
     def stop_rendering(self):
-        if self.render_thread and self.progress_thread != None:
-            self.render_thread.terminate()
-            self.progress_thread.terminate()
+        self.render_thread.terminate()
+        self.progress_thread.terminate()
+
+        self.btn_toggle_delete.setEnabled(True)
+        self.btn_go.setEnabled(True)
+
         self.update_progress(0)
 
     def update_progress(self, value):

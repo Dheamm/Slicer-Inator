@@ -1,7 +1,7 @@
 '''
 Prepared by: Ítalo Osorio
 Date of creation: 06/06/2024
-Last modification: 17/02/2025
+Last modification: 18/02/2025
 
 Purpose: Refactor the video cutter script “Slicer Inator.py” in classes and methods.
 PS: My first “POO” test in Python :D!
@@ -54,7 +54,15 @@ def start_application():
 
 start_application()
 
-# Todo: Configurar opcion de borrar el video original y agregarlo esa info al reporter.
+# Todo: Manejar videos corrompidos y saltarselos. ✔️
+# Todo: Hacer que la barra de progreso no avance si el video no se pudo cortar. ✔️
+# Todo: Configurar opcion de borrar el video original y agregarlo esa info al reporter. ✔️
+
+# Todo: Que los mensajes aparezcan en la interfaz y no en la consola.
+# Todo: Mejorar la interfaz grafica.
+# Todo: Agregar un boton de pausa.
+# Todo: Agregar un boton de reanudar.
+# Todo: Borrar el archivo temporal que se crea al iniciar el render si es que este se detiene por algo.
 # Todo: Hacer que al crear el csv se borre si hay uno anterior o al menos que se reescriba (Solo al crear, no al llenar info)
 # Todo: Seleccionar el nombre del juego segun el nombre del clip
 # Todo: Al usar el boton back durante el proceso de renderizado no pasa lo que esperarias.

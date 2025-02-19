@@ -48,3 +48,5 @@ class Slicer():
                                     bitrate="16000k",
                                     logger=None, # or 'bar' to display a progress bar.
                                     )
+        
+        slice_clip.close() # Close the clip.

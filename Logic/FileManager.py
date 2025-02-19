@@ -4,6 +4,7 @@
 from os import listdir # To read the files from a path.
 from os import makedirs # To make directories.
 from os.path import join # To join paths.
+from os import remove # To delete files.
 
 class FileManager():
     '''Get the list of files and handle them.'''
@@ -47,13 +48,23 @@ class FileManager():
             for one_format in video_formats:
                 if file.endswith(one_format): # Verify is the file has a valid format.
                     valid_files.append(file) # Add the file to the valid_file list.
-        return valid_files
+        if not valid_files:
+            print('Error! There are no valid files in the selected path.')
+            return None
+        else:
+            return valid_files
 
     def __create_output_path(self, input_path, directory_name='Sliced'):
         '''Create the output path.'''
         self.__output_path = join(input_path, directory_name) # Join the paths.
         makedirs(self.__output_path, exist_ok=True) # Create the directory if it doesn't exist.
         return self.__output_path
+    
+    def delete_original_files(self):
+        '''Delete the original files.'''
+        for file in self.get_method('valid_files_list'):
+            file_path = join(self.get_input_path(), file)
+            remove(file_path)
 
     def get_method(self, method_type):
         '''Get the value of the methods.'''
