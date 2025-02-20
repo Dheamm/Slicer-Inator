@@ -59,22 +59,26 @@ start_application()
 # Todo: Hacer que la barra de progreso no avance si el video no se pudo cortar. ✔️
 # Todo: Configurar opcion de borrar el video original  ✔️
 # Todo: El reporter tiene el uso del disco.✔️
-# Todo: agregar info al reporter sobre de si el video original fue borrado.✔️
+# Todo: Agregar info al reporter sobre de si el video original fue borrado.✔️
+# Todo: Agregar un boton para abrir la carpeta de salida y entrada.✔️
 
-# Pending tasks:
-# Todo: Que te muestre los clips totales en la interfaz que quedan y los que llevas
-# Todo: Agregar un boton para ir a la carpeta de salida y entrada y tambien abrir el reporte.
-# Todo: Si se da la casualidad de que hayan dos archivos con el mismo nombre en la carpeta de salida, se sobreescribiran, hacer que aparezca en el nombre (2) o algo así.
-# Todo: Que los mensajes aparezcan en la interfaz y no en la consola.
-# Todo: Mejorar la interfaz grafica.
-# Todo: Agregar un boton de pausa.
-# Todo: Agregar un boton de reanudar.
-# Todo: Borrar el archivo temporal que se crea al iniciar el render si es que este se detiene por algo.
-# Todo: Hacer que al crear el csv se borre si hay uno anterior o al menos que se reescriba (Solo al crear, no al llenar info)
-# Todo: Seleccionar el nombre del juego segun el nombre del clip
-# Todo: Al usar el boton back durante el proceso de renderizado no pasa lo que esperarias.
-# Todo: Agregar un boton pause que permita reanudar el proceso de renderizado.
-# Todo: Una vez el programa ya ha rendirazo todos los clips, al volver al menu y luego volver a la renderwindow, el progressbar se queda en 100.
-# Todo: Borrar archivo temporal que se crea al parar el render.
-# Todo: A veces se inicia la barra de render cuando el renderthread da error
-# Todo: Hacer una opcion para convertir los videos en mp3 ideal para la musica o liberar aun mas espacio.
+## Pending tasks: ##
+#Interface:
+# Todo: Que te muestre los clips totales en la interfaz que quedan y los que llevas.
+# Todo: Que la información que muestra la consola se muestre en la interfaz.
+# Todo: Embellecer la interfaz grafica.
+
+#Errors:
+# Todo: Si el render se detiene, borrar el archivo temporal que este crea.
+# Todo: Hay situaciones (sobre todo cuando el render tira una excepción) que el ciclo de la barra sigue.
+
+# Funionalities:
+# Todo: Cambiar ubicación del archivo temporal que se crea al renderizar.
+# Todo: Opción para poder pausar y reanudar el proceso.
+# Todo: Que el usuario pueda seleccionar el juego según el nombre del clip.
+# Todo: Ventana o apartado de configuración para cambiar los parametros de corte, renderizado y limites de los clips.
+# Todo: Darle la opción al usuario de convertir los videos a mp3.
+# Todo: Usar SQL y de esa forma poder hacer consultas mas complejas y poder continuar el proceso si se cierra la aplicación.
+
+# Possible:
+# Todo: Si existe un reporte.csv borrarlo y crear uno nuevo. (Opción de borrarlo para el usuario)

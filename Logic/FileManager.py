@@ -7,6 +7,7 @@ from os.path import join # To join paths.
 from os import remove # To delete files.
 from os.path import splitdrive # To get the drive letter.
 from shutil import disk_usage # To get the disk space.
+from os import startfile # To open the directory.
 
 
 class FileManager():
@@ -89,6 +90,10 @@ class FileManager():
                     )
         except FileNotFoundError:
             return "Unknown Drive", 0, 0
+        
+    def open_directory(self, directory):
+        '''Open a directory.'''
+        startfile(directory)
 
     def get_method(self, method_type):
         '''Get the value of the methods.'''

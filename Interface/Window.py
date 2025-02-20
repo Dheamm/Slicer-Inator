@@ -11,12 +11,12 @@ class Window(QMainWindow):
         '''Set the window parameters.'''
         self.setWindowTitle(title) # Set the window title
         self.setFixedSize(width, height) # Set fixed size
-        self.setStyleSheet(f"background-color: {color};") # Set the background color
+        self.setStyleSheet(f"background-color: {color}") # Set the background color
 
-    def button_config(self, text, background_color, font, font_size, tooltip_text, bold=True):
+    def button_config(self, text, background_color, font, font_size, tooltip_text, style='', bold=True):
         '''Method to configure the buttons.'''
         btn = QPushButton(text, self) # Create the button
-        btn.setStyleSheet(f"background-color: {background_color}") # Set the background color
+        btn.setStyleSheet(f"background-color: {background_color}; {style}") # Set the background color
         btn.setFont(QFont(font, font_size, QFont.Bold if bold else QFont.Normal)) # Set the font
 
         QToolTip.setFont(QFont('Arial', 10, QFont.Bold)) # Set the tooltip font
