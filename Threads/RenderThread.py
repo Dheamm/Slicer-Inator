@@ -14,6 +14,7 @@ from Logic.Reporter import Reporter # Import Reporter local class.
 class RenderThread(QThread):
     signal_render = pyqtSignal(int)
     signal_status = pyqtSignal(bool)
+    signal_processed = pyqtSignal(str)
 
     def __init__(self, file_manager, slicer, progress_bar, btn_toggle_delete, btn_go, execute_flag=True):
         super().__init__()
@@ -27,13 +28,19 @@ class RenderThread(QThread):
         try:
             reporter = Reporter(self.file_manager.get_output_path())
             reporter.file_creation()
-            for index, file in enumerate(self.file_manager.get_method('valid_files_list')):
+            
+            valid_files = self.file_manager.get_method('valid_files_list')
+            for index, file in enumerate(valid_files):
                 index += 1
                 renamer = Renamer(file, index)
                 
                 self.signal_render.emit(0)
                 self.signal_render.emit(1)
 
+                total_files = len(valid_files)
+                self.signal_processed.emit(f'{index}/{total_files} files processed.')
+
+                print(f'{index}/{total_files} files processed.')
                 print(f'- CLIP {index}:')
                 print(f'Name: {file}')
 

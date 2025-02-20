@@ -54,6 +54,9 @@ class RenderWindow(Window):
         self.btn_toggle_delete.setCheckable(True)
         self.btn_toggle_delete.clicked.connect(self.change_toggle_delete)
 
+        self.lbl_processed = QLabel('0/0 clips processed.', self)
+        self.lbl_processed.setStyleSheet("font-size: 20px;")
+        self.lbl_processed.setGeometry(160, 150, 200, 30)
 
         self.show()
 
@@ -63,8 +66,8 @@ class RenderWindow(Window):
         else:
             self.btn_toggle_delete.setText('Delete: OFF')
 
-    def info(self):
-        pass
+    def current_processed(self, text):
+        self.lbl_processed.setText(text)
 
     def start_rendering(self):
         self.btn_toggle_delete.setEnabled(False)
@@ -78,6 +81,7 @@ class RenderWindow(Window):
         self.render_thread.signal_render.connect(self.update_progress)
         self.progress_thread.signal_progress.connect(self.update_progress)
         self.render_thread.signal_status.connect(self.handle_render_error)
+        self.render_thread.signal_processed.connect(self.current_processed)
         
         # Start the threads
         self.render_thread.start()
@@ -87,7 +91,6 @@ class RenderWindow(Window):
         print("Error! Stopping ProgressThread.")
         self.stop_rendering()
 
-
     def stop_rendering(self):
         if self.render_thread and self.progress_thread is not None:
             self.render_thread.terminate()
@@ -95,6 +98,7 @@ class RenderWindow(Window):
 
             self.btn_toggle_delete.setEnabled(True)
             self.btn_start.setEnabled(True)
+            self.current_processed('0/0 clips processed.')
 
             self.update_progress(0)
 
