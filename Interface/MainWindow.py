@@ -63,6 +63,7 @@ class MainWindow(Window):
         btn_exit.clicked.connect(self.close)
 
         self.show() # Show the window
+        self.file_manager.delete_temp_files()
 
     def change_path(self):
         '''Change the path of the clips.'''

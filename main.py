@@ -1,7 +1,7 @@
 '''
 Prepared by: Ítalo Osorio
 Date of creation: 06/06/2024
-Last modification: 20/02/2025
+Last modification: 22/02/2025
 
 Purpose: Refactor the video cutter script “Slicer Inator.py” in classes and methods.
 PS: My first “POO” test in Python :D!
@@ -62,6 +62,7 @@ start_application()
 # Todo: Agregar info al reporter sobre de si el video original fue borrado.✔️
 # Todo: Agregar un boton para abrir la carpeta de salida y entrada.✔️
 # Todo: Que te muestre los clips totales en la interfaz que quedan y los que llevas.✔️
+# Todo: Si el render se detiene, borrar el archivo temporal que este crea. (Realmente lo borra al iniciar)✔️
 
 ## Pending tasks: ##
 #Interface:
@@ -69,7 +70,6 @@ start_application()
 # Todo: Embellecer la interfaz grafica.
 
 #Errors:
-# Todo: Si el render se detiene, borrar el archivo temporal que este crea.
 # Todo: Hay situaciones (sobre todo cuando el render tira una excepción) que el ciclo de la barra sigue.
 
 # Funionalities:

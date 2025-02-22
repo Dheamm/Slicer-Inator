@@ -3,6 +3,7 @@
 # Libraries:
 from PyQt5.QtWidgets import QLabel # To create labels.
 from PyQt5.QtWidgets import QProgressBar # To create progress bars.
+from PyQt5.QtCore import QThread # To create timers.
 
 # Local Classes:
 from Interface.Window import Window # Import Window local class.
@@ -96,11 +97,11 @@ class RenderWindow(Window):
             self.render_thread.terminate()
             self.progress_thread.terminate()
 
-            self.btn_toggle_delete.setEnabled(True)
-            self.btn_start.setEnabled(True)
-            self.current_processed('0/0 clips processed.')
+        self.btn_toggle_delete.setEnabled(True)
+        self.btn_start.setEnabled(True)
+        self.current_processed('0/0 clips processed.')
 
-            self.update_progress(0)
+        self.update_progress(0)
 
     def update_progress(self, value):
         self.pb_progress.setValue(value)

@@ -8,6 +8,7 @@ from os import remove # To delete files.
 from os.path import splitdrive # To get the drive letter.
 from shutil import disk_usage # To get the disk space.
 from os import startfile # To open the directory.
+from glob import glob # To get the list of files with a pattern.
 
 
 class FileManager():
@@ -77,6 +78,14 @@ class FileManager():
             drive = None
         
         return drive
+    
+    def delete_temp_files(self, pattern='*TEMP_AUDIO_*'):
+        '''Delete the temporary directory.'''
+        temps_files = glob(join(self.get_output_path(), pattern))
+
+        # Delete the temporary files.
+        for file in temps_files:
+            remove(file)
     
     def __disk_space(self, drive):
         """Show the total, used and free disk space in GB."""
