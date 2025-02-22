@@ -33,14 +33,13 @@ class RenderThread(QThread):
             for index, file in enumerate(valid_files):
                 index += 1
                 renamer = Renamer(file, index)
+                total_files = len(valid_files)
                 
                 self.signal_render.emit(0)
                 self.signal_render.emit(1)
+                self.signal_processed.emit(f'{index}/{total_files} clips processed.')
 
-                total_files = len(valid_files)
-                self.signal_processed.emit(f'{index}/{total_files} files processed.')
-
-                print(f'{index}/{total_files} files processed.')
+                print(f'{index}/{total_files} clips processed.')
                 print(f'- CLIP {index}:')
                 print(f'Name: {file}')
 
@@ -76,6 +75,7 @@ class RenderThread(QThread):
                 self.signal_render.emit(100)
                 if self.btn_toggle_delete.isChecked():
                     self.file_manager.delete_original_files(file)
+                QThread.msleep(1000)
 
         except TypeError as error:
             print('Error! The directory is empty or has not valid videos.')

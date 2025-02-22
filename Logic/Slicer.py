@@ -39,6 +39,7 @@ class Slicer():
     def render(self, slice_clip, name, video_format, output_path):
         '''Render the clip.'''
         output = join(output_path, name + video_format) # Built in the name and path.
+        temp_audio = join(output_path, 'TEMP_AUDIO_' + name + video_format) # Temporary audio file.
         slice_clip.write_videofile(output, # Rendering the video.
                                     codec="libx264",
                                     fps=60,
@@ -47,6 +48,7 @@ class Slicer():
                                     ffmpeg_params=["-vcodec", "h264_nvenc"],
                                     bitrate="16000k",
                                     logger='bar', # None or 'bar' to display a progress bar.
+                                    temp_audiofile=temp_audio, # The audio file is temporary.
                                     remove_temp=True # Remove the temporary file.
                                     )
         
