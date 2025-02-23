@@ -70,10 +70,12 @@ start_application()
 # Todo: Que la información que muestra la consola se muestre en la interfaz.
 # Todo: Que la barra sea mas precisa (y real).
 # Todo: Embellecer la interfaz grafica.
+# Todo: Agregar una ventana emergente cuando haya un error o bien mostrar un mensaje.
 
 #Errors:
 # Todo: Hay situaciones (sobre todo cuando el render tira una excepción) que el ciclo de la barra sigue.
 # Todo: Al borrar el archivo temporal, si el render se detiene, el archivo temporal no puede ser borrado pq se está usando.
+# Todo: Mejorar el manejo de errores y ser mas especifico con el.
 
 # Funionalities:
 # Todo: Opción para poder pausar y reanudar el proceso.

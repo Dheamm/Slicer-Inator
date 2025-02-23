@@ -64,24 +64,22 @@ class RenderThread(QThread):
 
                     total, used, free = self.file_manager.get_method('disk_space')
 
+                    if self.btn_toggle_delete.isChecked():
+                        self.file_manager.delete_original_files(file)
+
                     # Update the report file.
                     reporter.file_update(clip_number=index, original_name=file, delete_original=self.btn_toggle_delete.isChecked(),
                     renamed=new_name, game=renamer.game_pattern(), date=renamer.date_pattern(file_path), 
                     time=total_time, total_disk=total, used_disk=used, free_disk=free)
 
-
-
                 except OSError as error:
                     print(f'Error! The clip {index} could not be rendered.')
                     print(f'Error: {error}')
-                    reporter.file_update(file, 'Corrupt', 'Corrupt', 'Corrupt', index, 0)
-                    self.signal_render.emit(100)
+                    reporter.file_update(clip_number=index, original_name=file, delete_original=False,
+                    renamed='Corrupt', game=None, date=None, time=None, total_disk=None, used_disk=None, free_disk=None)
                     continue
 
                 self.signal_render.emit(100)
-                if self.btn_toggle_delete.isChecked():
-                    self.file_manager.delete_original_files(file)
-
                 self.signal_processed.emit('hide', None)
                 QThread.msleep(1000)
 
