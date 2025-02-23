@@ -44,11 +44,16 @@ class RenderWindow(Window):
         btn_stop.setGeometry(145, 75, 35, 35)
         btn_stop.clicked.connect(self.stop_rendering)
 
-        btn_back = self.button_config('Back', 'lightblue', 'Arial', 12, tooltip_text='Back to the main window')
+        btn_back = self.button_config('↩️', 'lightblue', 'Arial', 20, tooltip_text='Back to the main window')
         btn_back.setGeometry(430, 205, 60, 35)
         btn_back.clicked.connect(self.close)
         btn_back.clicked.connect(self.stop_rendering)
         btn_back.clicked.connect(self.controller.execute_main_window)
+
+        self.btn_settings = self.button_config('⚙️', 'lightblue', 'Arial', 14, tooltip_text='Settings', style='padding-top: 0px; padding-bottom: 4px;')
+        self.btn_settings.setGeometry(430, 165, 60, 35)
+        self.btn_settings.clicked.connect(self.close)
+        self.btn_settings.clicked.connect(self.controller.execute_settings_window)
 
         self.btn_toggle_delete = self.button_config('Delete: OFF', 'lightcoral', 'Arial', 12, tooltip_text='Delete original video')
         self.btn_toggle_delete.setGeometry(265, 75, 130, 35)
@@ -62,7 +67,7 @@ class RenderWindow(Window):
 
         self.lbl_name = QLabel(f'Name: {None}', self)
         self.lbl_name.setStyleSheet("font-size: 20px;")
-        self.lbl_name.setGeometry(50, 150, 400, 30)
+        self.lbl_name.setGeometry(50, 150, 350, 30)
         self.lbl_name.hide()
 
         self.lbl_status = QLabel(f'The clip {0} has been rendered!', self)
@@ -88,6 +93,7 @@ class RenderWindow(Window):
     def start_rendering(self):
         self.btn_toggle_delete.setEnabled(False)
         self.btn_start.setEnabled(False)
+        self.btn_settings.setEnabled(False)
 
         # Instances of the threads
         self.render_thread = RenderThread(self.file_manager, self.slicer, self.pb_progress, self.btn_toggle_delete, self.btn_start)
@@ -114,6 +120,7 @@ class RenderWindow(Window):
 
         self.btn_toggle_delete.setEnabled(True)
         self.btn_start.setEnabled(True)
+        self.btn_settings.setEnabled(True)
         self.lbl_processed.hide()
         self.lbl_name.hide()
         self.lbl_status.hide()
@@ -122,7 +129,7 @@ class RenderWindow(Window):
         self.update_progress(-1)
 
         self.file_manager.close_ffmpeg_process()
-        QThread.msleep(0) # Wait (nothing) for the process to close.
+        QThread.msleep(100) # Wait for the process to close.
         self.file_manager.delete_temp_files()
 
     def update_progress(self, value):

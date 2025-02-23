@@ -64,23 +64,29 @@ start_application()
 # Todo: Que te muestre los clips totales en la interfaz que quedan y los que llevas.✔️
 # Todo: Si el render se detiene, borrar el archivo temporal que este crea. (Realmente lo borra al iniciar)✔️
 # Todo: Cambiar ubicación del archivo temporal que se crea al renderizar. ✔️
+# Todo: Que la información que muestra la consola se muestre en la interfaz. ✔️
+# Todo: Al borrar el archivo temporal, si el render se detiene, el archivo temporal no puede ser borrado pq se está usando. ✔️
 
 ## Pending tasks: ##
 #Interface:
-# Todo: Que la información que muestra la consola se muestre en la interfaz.
+
 # Todo: Que la barra sea mas precisa (y real).
 # Todo: Embellecer la interfaz grafica.
-# Todo: Agregar una ventana emergente cuando haya un error o bien mostrar un mensaje.
+# Todo: Agregar una ventana emergente o simplemente un avis cuando haya un error.
 
 #Errors:
+# Todo: Si en settings ingresan valores invalidos controlarlos.
 # Todo: Hay situaciones (sobre todo cuando el render tira una excepción) que el ciclo de la barra sigue.
-# Todo: Al borrar el archivo temporal, si el render se detiene, el archivo temporal no puede ser borrado pq se está usando.
 # Todo: Mejorar el manejo de errores y ser mas especifico con el.
+# Todo: Si el proceso termina con un archivo corrupto la barra sigue.
 
 # Funionalities:
 # Todo: Opción para poder pausar y reanudar el proceso.
+# Todo: Boton en settings para volver a los ajustes predeterminados (cuando hayan mas settings.)
+# Todo: Agregar clip limit, para que el usuario pueda seleccionar cuantos clips quiere renderizar.
 # Todo: Opción de pasar al siguiente clip en el renderizado.
 # Todo: Que el usuario pueda seleccionar el juego según el nombre del clip.
+# Todo: Agregar mas parametros en la config como los fps, resolución, etc.
 # Todo: Ventana o apartado de configuración para cambiar los parametros de corte, renderizado y limites de los clips.
 # Todo: Darle la opción al usuario de convertir los videos a mp3.
 # Todo: Usar SQL y de esa forma poder hacer consultas mas complejas y poder continuar el proceso si se cierra la aplicación.

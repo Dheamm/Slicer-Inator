@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QMainWindow # To create the main window.
 from PyQt5.QtWidgets import QPushButton # To create buttons.
 from PyQt5.QtGui import QFont # To set the font.
 from PyQt5.QtWidgets import QToolTip # To set the tooltip.
+from PyQt5.QtWidgets import QMessageBox # To show messages.
 
 class Window(QMainWindow):
     def window_parameters(self, title, color, width=500, height=250):
@@ -22,3 +23,12 @@ class Window(QMainWindow):
         QToolTip.setFont(QFont('Arial', 10, QFont.Bold)) # Set the tooltip font
         btn.setToolTip(tooltip_text) # Set the tooltip
         return btn
+    
+    def show_message(self, title, message):
+        '''Show a message box.'''
+        msg = QMessageBox()
+        msg.setWindowTitle(title)
+        msg.setText(message)
+        msg.setIcon(QMessageBox.Icon.Information)
+        msg.setStandardButtons(QMessageBox.StandardButton.Ok)
+        msg.exec_()
