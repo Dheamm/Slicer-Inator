@@ -3,7 +3,6 @@
 # Libraries:
 from PyQt5.QtWidgets import QLabel # To create labels.
 from PyQt5.QtWidgets import QProgressBar # To create progress bars.
-from PyQt5.QtCore import QThread # To create timers.
 
 # Local Classes:
 from Interface.Window import Window # Import Window local class.
@@ -55,9 +54,27 @@ class RenderWindow(Window):
         self.btn_toggle_delete.setCheckable(True)
         self.btn_toggle_delete.clicked.connect(self.change_toggle_delete)
 
-        self.lbl_processed = QLabel('0/0 clips processed.', self)
+        self.lbl_processed = QLabel(f'{0}/{0} clips processed.', self)
         self.lbl_processed.setStyleSheet("font-size: 20px;")
-        self.lbl_processed.setGeometry(160, 150, 200, 30)
+        self.lbl_processed.setGeometry(50, 120, 200, 30)
+        self.lbl_processed.hide()
+
+        self.lbl_name = QLabel(f'Name: {None}', self)
+        self.lbl_name.setStyleSheet("font-size: 20px;")
+        self.lbl_name.setGeometry(50, 150, 400, 30)
+        self.lbl_name.hide()
+
+        self.lbl_status = QLabel(f'The clip {0} has been rendered!', self)
+        self.lbl_status.setStyleSheet("font-size: 20px;")
+        self.lbl_status.setGeometry(50, 180, 350, 30)
+        self.lbl_status.hide()
+
+        self.lbl_time = QLabel(f'Time: {0} seconds.', self)
+        self.lbl_time.setStyleSheet("font-size: 20px;")
+        self.lbl_time.setGeometry(50, 210, 200, 30)
+        self.lbl_time.hide()
+
+
 
         self.show()
 
@@ -66,9 +83,6 @@ class RenderWindow(Window):
             self.btn_toggle_delete.setText('Delete: ON')
         else:
             self.btn_toggle_delete.setText('Delete: OFF')
-
-    def current_processed(self, text):
-        self.lbl_processed.setText(text)
 
     def start_rendering(self):
         self.btn_toggle_delete.setEnabled(False)
@@ -82,7 +96,7 @@ class RenderWindow(Window):
         self.render_thread.signal_render.connect(self.update_progress)
         self.progress_thread.signal_progress.connect(self.update_progress)
         self.render_thread.signal_status.connect(self.handle_render_error)
-        self.render_thread.signal_processed.connect(self.current_processed)
+        self.render_thread.signal_processed.connect(self.update_info)
         
         # Start the threads
         self.render_thread.start()
@@ -99,11 +113,39 @@ class RenderWindow(Window):
 
         self.btn_toggle_delete.setEnabled(True)
         self.btn_start.setEnabled(True)
-        self.current_processed('0/0 clips processed.')
+        self.lbl_processed.hide()
+        self.lbl_name.hide()
+        self.lbl_status.hide()
+        self.lbl_time.hide()
 
         self.update_progress(0)
 
     def update_progress(self, value):
         self.pb_progress.setValue(value)
         self.pb_progress.update()
+
+    def update_info(self, info_type, text):
+        '''Update the information of the render window.'''
+        if info_type == 'processed':
+            self.lbl_processed.setText(text)
+            self.lbl_processed.show()
+
+        elif info_type == 'name':
+            self.lbl_name.setText(text)
+            self.lbl_name.setToolTip(text)
+            self.lbl_name.show()
+
+        elif info_type == 'render' or info_type == 'cut':
+            self.lbl_status.setText(text)
+            self.lbl_status.setToolTip(text)
+            self.lbl_status.show()
+
+        elif info_type == 'time':
+            self.lbl_time.setText(text)
+            self.lbl_time.show()
+
+        elif info_type == 'hide':
+            self.lbl_name.hide()
+            self.lbl_status.hide()
+            self.lbl_time.hide()
 

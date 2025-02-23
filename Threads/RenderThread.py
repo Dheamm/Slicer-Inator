@@ -14,7 +14,7 @@ from Logic.Reporter import Reporter # Import Reporter local class.
 class RenderThread(QThread):
     signal_render = pyqtSignal(int)
     signal_status = pyqtSignal(bool)
-    signal_processed = pyqtSignal(str)
+    signal_processed = pyqtSignal(str, object)
 
     def __init__(self, file_manager, slicer, progress_bar, btn_toggle_delete, btn_go, execute_flag=True):
         super().__init__()
@@ -37,7 +37,8 @@ class RenderThread(QThread):
                 
                 self.signal_render.emit(0)
                 self.signal_render.emit(1)
-                self.signal_processed.emit(f'{index}/{total_files} clips processed.')
+                self.signal_processed.emit('processed', f'''{index}/{total_files} clips processed.''')
+                self.signal_processed.emit('name', f'''Name: {file}''')
 
                 print(f'{index}/{total_files} clips processed.')
                 print(f'- CLIP {index}:')
@@ -45,7 +46,10 @@ class RenderThread(QThread):
 
                 try:
                     cut = self.slicer.cut(self.file_manager.get_input_path(), file)
+
+                    self.signal_processed.emit('cut', f'''The clip {index} has been cut!''')
                     print(f'The clip {index} has been cut!')
+
                     self.signal_render.emit(self.progress_bar.value() + 15)
 
                     start = time()
@@ -54,6 +58,8 @@ class RenderThread(QThread):
                     self.slicer.render(cut, (new_name), '.mp4', self.file_manager.get_output_path())
                     end = time()
                     total_time = int(end - start)
+                    self.signal_processed.emit('render', f'''The clip {index} has been rendered!''')
+                    self.signal_processed.emit('time', f'''Time: {total_time} seconds.''')
                     print(f'Time: {total_time} seconds.\n')
 
                     total, used, free = self.file_manager.get_method('disk_space')
@@ -75,6 +81,8 @@ class RenderThread(QThread):
                 self.signal_render.emit(100)
                 if self.btn_toggle_delete.isChecked():
                     self.file_manager.delete_original_files(file)
+
+                self.signal_processed.emit('hide', None)
                 QThread.msleep(1000)
 
         except TypeError as error:

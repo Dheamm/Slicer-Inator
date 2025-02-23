@@ -1,7 +1,7 @@
 '''
 Prepared by: Ítalo Osorio
 Date of creation: 06/06/2024
-Last modification: 22/02/2025
+Last modification: 23/02/2025
 
 Purpose: Refactor the video cutter script “Slicer Inator.py” in classes and methods.
 PS: My first “POO” test in Python :D!
@@ -63,18 +63,21 @@ start_application()
 # Todo: Agregar un boton para abrir la carpeta de salida y entrada.✔️
 # Todo: Que te muestre los clips totales en la interfaz que quedan y los que llevas.✔️
 # Todo: Si el render se detiene, borrar el archivo temporal que este crea. (Realmente lo borra al iniciar)✔️
+# Todo: Cambiar ubicación del archivo temporal que se crea al renderizar. ✔️
 
 ## Pending tasks: ##
 #Interface:
 # Todo: Que la información que muestra la consola se muestre en la interfaz.
+# Todo: Que la barra sea mas precisa (y real).
 # Todo: Embellecer la interfaz grafica.
 
 #Errors:
 # Todo: Hay situaciones (sobre todo cuando el render tira una excepción) que el ciclo de la barra sigue.
+# Todo: Al borrar el archivo temporal, si el render se detiene, el archivo temporal no puede ser borrado pq se está usando.
 
 # Funionalities:
-# Todo: Cambiar ubicación del archivo temporal que se crea al renderizar.
 # Todo: Opción para poder pausar y reanudar el proceso.
+# Todo: Opción de pasar al siguiente clip en el renderizado.
 # Todo: Que el usuario pueda seleccionar el juego según el nombre del clip.
 # Todo: Ventana o apartado de configuración para cambiar los parametros de corte, renderizado y limites de los clips.
 # Todo: Darle la opción al usuario de convertir los videos a mp3.
