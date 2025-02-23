@@ -3,6 +3,7 @@
 # Libraries:
 from PyQt5.QtWidgets import QLabel # To create labels.
 from PyQt5.QtWidgets import QProgressBar # To create progress bars.
+from PyQt5.QtCore import QThread # To create threads.
 
 # Local Classes:
 from Interface.Window import Window # Import Window local class.
@@ -118,7 +119,11 @@ class RenderWindow(Window):
         self.lbl_status.hide()
         self.lbl_time.hide()
 
-        self.update_progress(0)
+        self.update_progress(-1)
+
+        self.file_manager.close_ffmpeg_process()
+        QThread.msleep(0) # Wait (nothing) for the process to close.
+        self.file_manager.delete_temp_files()
 
     def update_progress(self, value):
         self.pb_progress.setValue(value)

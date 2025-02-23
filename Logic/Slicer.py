@@ -53,3 +53,4 @@ class Slicer():
                                     )
         
         slice_clip.close() # Close the clip.
+

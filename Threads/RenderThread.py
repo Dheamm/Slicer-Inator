@@ -80,6 +80,7 @@ class RenderThread(QThread):
                     continue
 
                 self.signal_render.emit(100)
+
                 self.signal_processed.emit('hide', None)
                 QThread.msleep(1000)
 

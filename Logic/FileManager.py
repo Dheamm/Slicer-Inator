@@ -9,6 +9,8 @@ from os.path import splitdrive # To get the drive letter.
 from shutil import disk_usage # To get the disk space.
 from os import startfile # To open the directory.
 from glob import glob # To get the list of files with a pattern.
+from psutil import process_iter # To get the process list.
+from psutil import Process # To get the process.
 
 
 class FileManager():
@@ -103,6 +105,13 @@ class FileManager():
     def open_directory(self, directory):
         '''Open a directory.'''
         startfile(directory)
+
+    def close_ffmpeg_process(self):
+        '''Close the `ffmpeg` process.'''
+        for process in process_iter(attrs=['pid', 'name']):
+            if "ffmpeg" in process.info['name'].lower():  #Search 'ffmpeg' in the process name
+                print(f"Stopping the process: {process.info}")
+                Process(process.info['pid']).terminate()  # Stop the process.
 
     def get_method(self, method_type):
         '''Get the value of the methods.'''
