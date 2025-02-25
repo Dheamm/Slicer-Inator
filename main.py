@@ -1,7 +1,7 @@
 '''
 Prepared by: Ítalo Osorio
 Date of creation: 06/06/2024
-Last modification: 23/02/2025
+Last modification: 24/02/2025
 
 Purpose: Refactor the video cutter script “Slicer Inator.py” in classes and methods.
 PS: My first “POO” test in Python :D!
@@ -81,6 +81,8 @@ start_application()
 # Todo: Si el proceso termina con un archivo corrupto la barra sigue.
 
 # Funionalities:
+# Todo: Que la fecha salga en el nombre en el formato que el usuario quiera.
+# Todo: Si el usario ejecuta el programa, que deba seleccionar una input path. 
 # Todo: Opción para poder pausar y reanudar el proceso.
 # Todo: Boton en settings para volver a los ajustes predeterminados (cuando hayan mas settings.)
 # Todo: Agregar clip limit, para que el usuario pueda seleccionar cuantos clips quiere renderizar.

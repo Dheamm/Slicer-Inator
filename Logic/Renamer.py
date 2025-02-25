@@ -30,7 +30,7 @@ class Renamer():
         '''Get the date pattern of the file.'''
         time_stamp = getmtime(file_path) # Get the 'unix' time stamp of the file.
         date = datetime.fromtimestamp(time_stamp) # Convert the time stamp to a date.
-        date_format = date.strftime('%Y.%m.%d %H.%M') # Format the date.
+        date_format = date.strftime('%d.%m.%Y %H.%M') # Format the date.
 
         return date_format
     
