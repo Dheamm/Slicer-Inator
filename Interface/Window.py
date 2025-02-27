@@ -6,6 +6,12 @@ from PyQt5.QtWidgets import QPushButton # To create buttons.
 from PyQt5.QtGui import QFont # To set the font.
 from PyQt5.QtWidgets import QToolTip # To set the tooltip.
 from PyQt5.QtWidgets import QMessageBox # To show messages.
+from PyQt5.QtWidgets import QLineEdit # To create inputs.
+from PyQt5.QtGui import QIntValidator # To validate the input.
+from PyQt5.QtGui import QDoubleValidator # To validate the input.
+from PyQt5.QtGui import QRegularExpressionValidator
+from PyQt5.QtCore import QRegularExpression
+from PyQt5.QtWidgets import QComboBox # To create comboboxes
 
 class Window(QMainWindow):
     def window_parameters(self, title, color, width=500, height=250):
@@ -32,3 +38,44 @@ class Window(QMainWindow):
         msg.setIcon(QMessageBox.Icon.Information)
         msg.setStandardButtons(QMessageBox.StandardButton.Ok)
         msg.exec_()
+
+    def input_config(self, geometry:tuple[int,int,int,int], validator:str=None, placeholder:str=None, tooltip:str=None):
+        '''Method to configure the inputs.'''
+        txt = QLineEdit(self)
+        txt.setGeometry(*geometry) # '*' unpacks the tuple.
+        txt.setStyleSheet("background-color: white; color: black; border: 1px solid black; border-radius: 5px;")
+        txt.setPlaceholderText(placeholder)
+        txt.setToolTip(tooltip)
+
+        # Set Validator:
+        if validator == 'int':
+            # Only integers.
+            txt.setValidator(QIntValidator())
+        elif validator == 'float':
+            # Only floats.
+            txt.setValidator(QDoubleValidator())
+        elif validator == 'str':
+            # Only letters.
+            regex_str = QRegularExpression("^[A-Za-zÁÉÍÓÚáéíóúñÑ]+$") 
+            txt.setValidator(QRegularExpressionValidator(regex_str, self))
+        elif validator == None:
+            # Default: Any input.
+            pass
+
+        return txt
+    
+    def combobox_config(self, geometry:tuple[int,int,int,int], tooltip:str=None, items:list[str]=[]):
+        '''Method to configure the comboboxes.'''
+        cb = QComboBox(self)
+        cb.setGeometry(*geometry)
+        cb.setStyleSheet("background-color: white; color: black; border: 1px solid black; border-radius: 5px;")
+        cb.addItems(items)
+        cb.setToolTip(tooltip)
+        cb.setCurrentIndex(0)
+
+        font = QFont('Arial', 8, QFont.Bold)
+        cb.setFont(font)
+        return cb
+    
+
+

@@ -54,7 +54,7 @@ class RenderThread(QThread):
                     start = time()
                     file_path = join(self.file_manager.get_input_path() + '\\' + file) 
                     new_name = renamer.rename_file(file_path)
-                    video_text = self.slicer.add_text(video_cut, f'{new_name}', 25, 'white')
+                    video_text = self.slicer.add_text(video_cut, new_name, 25, 'white')
                     self.slicer.render(video_text, (new_name), '.mp4', self.file_manager.get_output_path())
                     end = time()
                     total_time = int(end - start)

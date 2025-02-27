@@ -14,6 +14,7 @@ class Slicer():
     def __init__(self, duration, limit):
         self.__duration = duration
         self.__limit = limit
+        self.__text_position = ("left", "bottom")
 
     def get_duration(self):
         '''Get the duration of the clip.'''
@@ -30,6 +31,17 @@ class Slicer():
     def set_limit(self, new_limit):
         '''Set the limit of the clips.'''
         self.__limit = new_limit
+
+    def get_text_position(self):
+        '''Get the position of the text.'''
+        return self.__text_position
+    
+    def set_text_position(self, new_position:str):
+        '''Set the position of the text.'''
+        if not new_position == 'none':
+            self.__text_position = tuple(new_position.split('-')) # Convert the string to tuple.
+        if new_position == 'none':
+            self.__text_position = None
 
     def cut(self, input_path, valid_file):
         '''Cut the clip.'''
@@ -59,10 +71,14 @@ class Slicer():
         
         slice_clip.close() # Close the clip.
 
-    def add_text(self, slice_clip, text:str, font_size:int, color:str, position:tuple[str,str] = ("left", "bottom")):
+    def add_text(self, slice_clip, input_text:str, font_size:int, color:str):
         '''Add text to the clip.'''
-        text = TextClip(text, fontsize=font_size, color=color, font="Arial-Bold")
-        text = text.set_position(position).set_duration(slice_clip.duration)
+        text = TextClip(input_text, fontsize=font_size, color=color, font="Arial-Bold")
+        if self.get_text_position() is not None:
+            text = text.set_position(self.get_text_position()).set_duration(slice_clip.duration)
+        else:
+            text = text.set_duration(slice_clip.duration-slice_clip.duration)
         video_final = CompositeVideoClip([slice_clip, text])
+
         return video_final
 

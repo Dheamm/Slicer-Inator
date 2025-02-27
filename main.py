@@ -1,7 +1,7 @@
 '''
 Prepared by: Ítalo Osorio
 Date of creation: 06/06/2024
-Last modification: 24/02/2025
+Last modification: 26/02/2025
 
 Purpose: Refactor the video cutter script “Slicer Inator.py” in classes and methods.
 PS: My first “POO” test in Python :D!
@@ -21,7 +21,7 @@ from Interface.WindowsController import WindowsController # Import WindowsContro
 # Parameters:
 INPUT_PATH = r'C:\Users\Dheam\Videos\Prueba'
 CLIPS_LIMIT = 10
-DURATION = 45
+DURATION = 3
 VIDEO_FORMATS = ('.mp4', '.avi', '.mov', '.mkv', '.flv')
 
 def clear(cooldown=0):
