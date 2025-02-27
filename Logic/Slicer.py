@@ -2,7 +2,12 @@
 
 # Libraries:
 from os.path import join # To join paths.
+
 from moviepy.editor import VideoFileClip # To manipulate and render the clips.
+from moviepy.editor import TextClip
+from moviepy.editor import CompositeVideoClip
+from moviepy.config import change_settings
+change_settings({"IMAGEMAGICK_BINARY": r"C:\Program Files\ImageMagick-7.1.1-Q16-HDRI\magick.exe"})
 
 class Slicer():
     '''Cut and render the video clips.'''
@@ -53,4 +58,11 @@ class Slicer():
                                     )
         
         slice_clip.close() # Close the clip.
+
+    def add_text(self, slice_clip, text:str, font_size:int, color:str, position:tuple[str,str] = ("left", "bottom")):
+        '''Add text to the clip.'''
+        text = TextClip(text, fontsize=font_size, color=color, font="Arial-Bold")
+        text = text.set_position(position).set_duration(slice_clip.duration)
+        video_final = CompositeVideoClip([slice_clip, text])
+        return video_final
 
