@@ -71,7 +71,6 @@ class Window(QMainWindow):
         cb.setStyleSheet("background-color: white; color: black; border: 1px solid black; border-radius: 5px;")
         cb.addItems(items)
         cb.setToolTip(tooltip)
-        cb.setCurrentIndex(0)
 
         font = QFont('Arial', 8, QFont.Bold)
         cb.setFont(font)

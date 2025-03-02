@@ -66,7 +66,7 @@ class MainWindow(Window):
 
     def change_path(self):
         '''Change the path of the clips.'''
-        new_path = QFileDialog.getExistingDirectory(self, 'Select the directory of the clips')
+        new_path = QFileDialog.getExistingDirectory(self, 'Select the directory of the clips', self.file_manager.get_input_path())
         if new_path:
             self.file_manager.set_input_path(new_path)
             self.lbl_path.setText(f"Ruta: {self.file_manager.get_input_path()}")

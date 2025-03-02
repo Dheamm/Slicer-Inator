@@ -11,12 +11,13 @@ from os import startfile # To open the directory.
 from glob import glob # To get the list of files with a pattern.
 from psutil import process_iter # To get the process list.
 from psutil import Process # To get the process.
+from pathlib import Path # To get the home and video directory.
 
 
 class FileManager():
     '''Get the list of files and handle them.'''
-    def __init__(self, input_path, video_formats, output_path=None):
-        self.__input_path = input_path
+    def __init__(self, video_formats, output_path=None):
+        self.__input_path = str(self.base_directory())
         self.__video_formats = video_formats
         self.__output_path = output_path
 
@@ -112,6 +113,28 @@ class FileManager():
             if "ffmpeg" in process.info['name'].lower():  #Search 'ffmpeg' in the process name
                 print(f"Stopping the process: {process.info}")
                 Process(process.info['pid']).terminate()  # Stop the process.
+
+    # def close_vlc_process(self):
+    #     '''Close the `vlc` process.'''
+    #     for process in process_iter(attrs=['pid', 'name']):
+    #         if "vlc" in process.info['name'].lower():
+
+    
+    def home_dir(self):
+        # Get the home directory.
+        return Path.home()
+
+    def dir_exists(self, directory:str):
+        '''Check if the directory exists.'''
+        return (self.home_dir()/directory).exists()
+
+    def base_directory(self, directory:str='Videos'):
+        '''Get the base or main directory.'''
+        if not self.dir_exists(directory):
+            return self.home_dir()
+        else:
+            return self.home_dir()/directory
+
 
     def get_method(self, method_type):
         '''Get the value of the methods.'''
