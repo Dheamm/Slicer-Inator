@@ -4,12 +4,10 @@ from Interface.RenderWindow import RenderWindow # Import RenderWindow local clas
 from Interface.SettingsWindow import SettingsWindow # Import SettingsWindow local class.
 
 class WindowsController():
-    def __init__(self, file_manager, slicer):
-        self.file_manager = file_manager
-        self.slicer = slicer
-        self.main_window = MainWindow(self.file_manager, self.slicer)
-        self.render_window = RenderWindow(self.file_manager, self.slicer)
-        self.settings_window = SettingsWindow(self.file_manager, self.slicer)
+    def __init__(self):
+        self.main_window = MainWindow()
+        self.render_window = RenderWindow()
+        self.settings_window = SettingsWindow()
 
         self.main_window.set_controller(self)
         self.render_window.set_controller(self)

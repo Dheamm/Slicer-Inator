@@ -8,13 +8,15 @@ from PyQt5.QtWidgets import QLineEdit # To create inputs.
 
 
 # Local Classes:
+from Logic.FileManager import FileManager # Import FileManager local class.
+from Logic.Slicer import Slicer # Import Slicer local class.
 from Interface.Window import Window # Import Window local class.
 
 class SettingsWindow(Window):
-    def __init__(self, file_manager, slicer):
+    def __init__(self):
         super().__init__()
-        self.file_manager = file_manager
-        self.slicer = slicer
+        self.file_manager = FileManager()
+        self.slicer = Slicer()
 
     def set_controller(self, controller):
         self.controller = controller

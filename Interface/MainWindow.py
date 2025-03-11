@@ -8,13 +8,13 @@ from PyQt5.QtWidgets import QWidget # To create widgets.
 from PyQt5.QtWidgets import QFileDialog
 
 # Local Classes:
+from Logic.FileManager import FileManager # Import FileManager local class.
 from Interface.Window import Window # Import Window local class.
 
 class MainWindow(Window):
-    def __init__(self, file_manager, slicer):
+    def __init__(self):
         super().__init__()
-        self.file_manager = file_manager
-        self.slicer = slicer
+        self.file_manager = FileManager()
 
     def set_controller(self, controller):
         self.controller = controller
@@ -48,7 +48,7 @@ class MainWindow(Window):
         # Open Output Path Button:
         btn_open_output_path = super().button_config("Output Path", "lightblue", "Arial", 8, tooltip_text="Open the output path")
         btn_open_output_path.setGeometry(200, 0, 100, 30)
-        btn_open_output_path.clicked.connect(lambda: self.file_manager.open_directory(self.file_manager.get_output_path()))
+        btn_open_output_path.clicked.connect(self.open_output_path)
 
         # Slice Button:
         btn_slice = super().button_config("Slice", "lightblue", "Arial", 16, tooltip_text="Go to the render window")
@@ -69,4 +69,12 @@ class MainWindow(Window):
         new_path = QFileDialog.getExistingDirectory(self, 'Select the directory of the clips', self.file_manager.get_input_path())
         if new_path:
             self.file_manager.set_input_path(new_path)
-            self.lbl_path.setText(f"Ruta: {self.file_manager.get_input_path()}")
+            self.lbl_path.setText(f"Path: {self.file_manager.get_input_path()}")
+            print(f"New path: {self.file_manager.get_input_path()}")
+
+    def open_output_path(self):
+        '''Open the output path.'''
+        try:
+            self.file_manager.open_directory(self.file_manager.get_output_path())
+        except ValueError as e:
+            super().show_message("Error", f"{e}")

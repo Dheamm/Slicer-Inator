@@ -16,23 +16,17 @@ from Logic.FileManager import FileManager # Import FileManager local class.
 from Logic.Slicer import Slicer # Import Slicer local class.
 from Interface.WindowsController import WindowsController # Import WindowsController local class.
 
-CLIPS_LIMIT = 10
-DURATION = 3
-VIDEO_FORMATS = ('.mp4', '.avi', '.mov', '.mkv', '.flv')
 
 def start_application():
-    # Logic:
-    file_manager = FileManager(VIDEO_FORMATS) # Instance of FileManager
-    slicer = Slicer(DURATION, CLIPS_LIMIT) # Instance of Slicer
-
     # Interface:
     app = QApplication([]) # Create the application to show the interface.
-    interface = WindowsController(file_manager, slicer) # Instance of MainWindow
+    interface = WindowsController() # Instance of MainWindow
 
     interface.execute_main_window() # Show the window with a parameter of RenderWindow.
     exit(app.exec_()) # Execute the event loop.
 
-start_application()
+if __name__ == '__main__':
+    start_application()
 
 #Completed tasks:
 # Todo: Manejar videos corrompidos y saltarselos. ✔️
@@ -46,6 +40,7 @@ start_application()
 # Todo: Cambiar ubicación del archivo temporal que se crea al renderizar. ✔️
 # Todo: Que la información que muestra la consola se muestre en la interfaz. ✔️
 # Todo: Al borrar el archivo temporal, si el render se detiene, el archivo temporal no puede ser borrado pq se está usando. ✔️
+# Todo: Si el usario ejecuta el programa, que deba seleccionar una input path. ## Se selecciona por defecto. ✔️
 
 ## Pending tasks: ##
 #Interface:
@@ -62,7 +57,6 @@ start_application()
 
 # Funionalities:
 # Todo: Que la fecha salga en el nombre en el formato que el usuario quiera.
-# Todo: Si el usario ejecuta el programa, que deba seleccionar una input path. 
 # Todo: Opción para poder pausar y reanudar el proceso.
 # Todo: Boton en settings para volver a los ajustes predeterminados (cuando hayan mas settings.)
 # Todo: Agregar clip limit, para que el usuario pueda seleccionar cuantos clips quiere renderizar.
@@ -75,4 +69,4 @@ start_application()
 
 # Possible:
 # Todo: Si existe un reporte.csv borrarlo y crear uno nuevo. (Opción de borrarlo para el usuario)
-
+# Todo: Refactorizar renamer y también las ventanas que reciben como parametros en el constructor el objeto slicer y file_manager.

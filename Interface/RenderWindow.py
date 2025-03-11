@@ -6,15 +6,17 @@ from PyQt5.QtWidgets import QProgressBar # To create progress bars.
 from PyQt5.QtCore import QThread # To create threads.
 
 # Local Classes:
+from Logic.FileManager import FileManager # Import FileManager local class.
+from Logic.Slicer import Slicer # Import Slicer local class.
 from Interface.Window import Window # Import Window local class.
 from Threads.RenderThread import RenderThread # Import RenderThread local class.
 from Threads.ProgressThread import ProgressThread # Import ProgressThread local class.
 
 class RenderWindow(Window):
-    def __init__(self, file_manager, slicer):
+    def __init__(self):
         super().__init__()
-        self.file_manager = file_manager
-        self.slicer = slicer
+        self.file_manager = FileManager()
+        self.slicer = Slicer()
         self.render_thread = None
         self.progress_thread = None
 

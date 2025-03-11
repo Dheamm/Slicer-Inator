@@ -14,12 +14,25 @@ from psutil import Process # To get the process.
 from pathlib import Path # To get the home and video directory.
 
 
+
 class FileManager():
     '''Get the list of files and handle them.'''
-    def __init__(self, video_formats, output_path=None):
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __init__(self,
+                input_path=None,
+                video_formats:tuple = ('.mp4', '.avi', '.mov', '.mkv', '.flv'),
+                output_path=None,
+                directory_output_name='Sliced'):
         self.__input_path = str(self.base_directory())
         self.__video_formats = video_formats
         self.__output_path = output_path
+        self.__directory_output_name = directory_output_name
 
     def get_input_path(self):
         '''Get the path of the clips.'''
@@ -39,11 +52,29 @@ class FileManager():
 
     def get_output_path(self):
         '''Get the output path.'''
-        return self.__create_output_path(self.get_input_path())
+        if self.search_directory(self.get_input_path(), self.get_directory_output_name()):
+            self.set_output_path(join(self.get_input_path(), self.get_directory_output_name()))
+            return self.__output_path
+        else:
+            raise ValueError('The output path is not set.')
+            
 
     def set_output_path(self, new_path):
         '''Set the output path.'''
         self.__output_path = new_path
+
+    def get_directory_output_name(self):
+        '''Get the name of the output directory.'''
+        return self.__directory_output_name
+    
+    def set_directory_output_name(self, new_name):
+        '''Set the name of the output directory.'''
+        self.__directory_output_name = new_name
+
+    def search_directory(self, input_path:str, directory:str):
+        '''Search the directory.'''
+        path = Path(join(input_path, directory))
+        return path.exists()
 
     def __files_list(self, path):
         '''A list of files in the selected path.'''
@@ -62,12 +93,13 @@ class FileManager():
         else:
             return valid_files
 
-    def __create_output_path(self, input_path, directory_name='Sliced'):
+    def create_output_path(self):
         '''Create the output path.'''
-        self.__output_path = join(input_path, directory_name) # Join the paths.
-        makedirs(self.__output_path, exist_ok=True) # Create the directory if it doesn't exist.
-        return self.__output_path
-    
+        output_path = join(self.get_input_path(), self.get_directory_output_name()) # Join the paths.
+        makedirs(output_path, exist_ok=True) # Create the directory if it doesn't exist.
+
+        self.set_output_path(output_path) # Set the output path.
+
     def delete_original_files(self, file):
         '''Delete the original files.'''
         file_path = join(self.get_input_path(), file)
@@ -84,11 +116,14 @@ class FileManager():
     
     def delete_temp_files(self, pattern='*TEMP_AUDIO_*'):
         '''Delete the temporary directory.'''
-        temps_files = glob(join(self.get_output_path(), pattern))
+        try:
+            temps_files = glob(join(self.get_output_path(), pattern))
 
-        # Delete the temporary files.
-        for file in temps_files:
-            remove(file)
+            # Delete the temporary files.
+            for file in temps_files:
+                remove(file)
+        except ValueError as e:
+            print(f"Temp Files have not been deleted!\nError: {e}")
     
     def __disk_space(self, drive):
         """Show the total, used and free disk space in GB."""
@@ -102,7 +137,7 @@ class FileManager():
                     )
         except FileNotFoundError:
             return "Unknown Drive", 0, 0
-        
+
     def open_directory(self, directory):
         '''Open a directory.'''
         startfile(directory)
@@ -143,7 +178,7 @@ class FileManager():
 
         elif method_type == 'valid_files_list':
             return self.__valid_files_list(self.get_method('list'), self.get_video_formats())
-        
+
         elif method_type == 'disk_space':
             return self.__disk_space(self.get_drive(self.get_input_path()))
 

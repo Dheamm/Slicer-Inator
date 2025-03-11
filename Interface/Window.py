@@ -75,6 +75,3 @@ class Window(QMainWindow):
         font = QFont('Arial', 8, QFont.Bold)
         cb.setFont(font)
         return cb
-    
-
-
