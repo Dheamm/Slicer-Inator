@@ -24,11 +24,15 @@ class RenderThread(QThread):
         self.btn_toggle_delete = btn_toggle_delete
         self.btn_go = btn_go
 
+    def show_status(self, status:str):
+        '''Show the status info and send to the render window.'''
+        self.signal_processed.emit('status', status)
+        print(status)
+
     def run(self):
         '''Run the render process.'''
         try:
             path = self.file_manager.get_input_path()
-            print(f'Path: {path}')
             valid_files = self.file_manager.get_method('valid_files_list')
             self.file_manager.create_output_path()
             output_path = self.file_manager.get_output_path()
@@ -45,81 +49,82 @@ class RenderThread(QThread):
                 self.signal_render.emit(1)
                 self.signal_processed.emit('processed', f'{index-1}/{len(valid_files)} clips processed.')
                 self.signal_processed.emit('name', f'Name: {file}')
-
                 print(f'{index-1}/{len(valid_files)} clips processed.')
                 print(f'Name: {file}')
 
                 try:
                     timer_start = time()
-                    print(f'Clip {index} timer started.\n')
+                    self.show_status(f'Clip {index} timer started.')
 
                     load_clip = self.slicer.load_clip(path, file)
-                    print(f'The clip {index} has been loaded.\n')
+                    self.show_status(f'The clip {index} has been loaded.')
 
                     slice_clip = self.slicer.slice_clip(load_clip)
-                    print(f'The clip {index} has been sliced.\n')
+                    self.show_status(f'The clip {index} has been sliced.')
 
                     overlay_text = self.slicer.overlay_text(slice_clip, renamer.file_name(path, file))
-                    print(f'Overlay text has been added in the clip {index}.\n')
+                    self.show_status(f'Overlay text has been added in the clip {index}.')
 
                     if index == 1: # First clip.
                         transition_fade_out = self.slicer.transition_fade_out(overlay_text)
-                        print(f'Fading-out transition added in the clip {index}.\n')
+                        self.show_status(f'Fading-out transition added in the clip {index}.')
+
 
                         clips_list.append(transition_fade_out)
 
                     elif index == (len(valid_files)): # Last clip.
                         transition_fade_in = self.slicer.transition_fade_in(overlay_text)
-                        print(f'Fading-in transition added in the clip {index}.\n')
+                        self.show_status(f'Fading-in transition added in the clip {index}.')
 
                         clips_list.append(transition_fade_in)
 
                     else: # Middle clips.
                         transition_fade_out = self.slicer.transition_fade_out(overlay_text)
-                        print(f'Fading-out transition added in the clip {index}.\n')
+                        self.show_status(f'Fading-out transition added in the clip {index}.')
 
                         transition_fade_in = self.slicer.transition_fade_in(transition_fade_out)
-                        print(f'Fading-in transition added in the clip {index}.\n')
+                        self.show_status(f'Fading-in transition added in the clip {index}.')
 
                         clips_list.append(transition_fade_in)
 
                     timer_end = time()
-                    print(f'Clip {index} timer ended.\n')
+                    self.show_status(f'Clip {index} timer ended.')
 
                     total_time = int(timer_end - timer_start)
                     print(f'Time: {total_time} seconds.\n')
+                    self.signal_processed.emit('time', f'Time: {total_time} seconds.')
 
                     # Update report file.
                     reporter.file_update(clip_number=index, original_name=file, delete_original=self.btn_toggle_delete.isChecked(),
                     renamed=renamer.file_name(path, file), game=renamer.game_pattern(), date=renamer.date_pattern(path, file), 
                     time=total_time, total_disk=total_disk, used_disk=used_disk, free_disk=free_disk)
-                    print(f'Report file has been updated.\n')
+                    self.show_status(f'Report file has been updated.')
 
                 except OSError as error:
-                    print(f'Error! In the flow process.')
+                    self.show_status(f'Error! In the flow process.')
                     print(f'Error: {error}')
 
                     reporter.file_update(clip_number=index, original_name=file, delete_original=False,
                     renamed='Corrupt', game=None, date=None, time=None, total_disk=None, used_disk=None, free_disk=None)
-                    print(f'Report corrupt file has been updated corrupt.\n')
+                    self.show_status(f'The report for the corrupt file has been updated.')
 
                     continue
 
                 try:
                     concatenate_clips = self.slicer.concatenate_clips(clips_list)
-                    print(f'Clip {index} has been concatenated.\n')
+                    self.show_status(f'Clip {index} has been concatenated.')
 
                     self.slicer.render_clip(concatenate_clips, renamer.game_pattern(), output_path)
-                    print(f'Clip {index} has been rendered.\n')
+                    self.show_status(f'Clip {index} has been rendered.')
 
                 except OSError as error:
-                    print('Error! In the render process.')
+                    self.show_status(f'Error! In the render process.')
                     print(f'Error: {error}')
                     continue
 
                 if self.btn_toggle_delete.isChecked():
                     self.file_manager.delete_original_files(file)
-                    print(f'Original file {file} has been deleted.\n')
+                    self.show_status(f'Original file {file} has been deleted.')
 
                 self.signal_render.emit(100)
                 self.signal_processed.emit('hide', None)
@@ -129,7 +134,7 @@ class RenderThread(QThread):
             self.btn_toggle_delete.setEnabled(True)
 
         except TypeError as error:
-            print('Error! The directory is empty or has not valid videos.')
+            self.show_status(f'Error! The directory is empty or has not valid videos.')
             print(f'Error: {error}')
             self.signal_status.emit(False)
 

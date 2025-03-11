@@ -149,7 +149,7 @@ class RenderWindow(Window):
             self.lbl_name.setToolTip(text)
             self.lbl_name.show()
 
-        elif info_type == 'render' or info_type == 'cut':
+        elif info_type == 'status':
             self.lbl_status.setText(text)
             self.lbl_status.setToolTip(text)
             self.lbl_status.show()

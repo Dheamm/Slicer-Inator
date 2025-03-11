@@ -56,6 +56,7 @@ if __name__ == '__main__':
 # Todo: Si el proceso termina con un archivo corrupto la barra sigue.
 
 # Funionalities:
+# Todo: Agregar un log de todo lo que ha hecho el programa visible desde la interfaz. Que muestre los mensaje del proceso.
 # Todo: Que la fecha salga en el nombre en el formato que el usuario quiera.
 # Todo: Opción para poder pausar y reanudar el proceso.
 # Todo: Boton en settings para volver a los ajustes predeterminados (cuando hayan mas settings.)
