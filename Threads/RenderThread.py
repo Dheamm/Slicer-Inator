@@ -47,9 +47,10 @@ class RenderThread(QThread):
                 # -- FLOW -- #
                 self.signal_render.emit(0)
                 self.signal_render.emit(1)
-                self.signal_processed.emit('processed', f'{index-1}/{len(valid_files)} clips processed.')
                 self.signal_processed.emit('name', f'Name: {file}')
-                print(f'{index-1}/{len(valid_files)} clips processed.')
+                if index == 1:
+                    self.signal_processed.emit('processed', f'{0}/{len(valid_files)} clips processed.')
+                    print(f'{0}/{len(valid_files)} clips processed.')
                 print(f'Name: {file}')
 
                 try:
@@ -107,19 +108,6 @@ class RenderThread(QThread):
                     reporter.file_update(clip_number=index, original_name=file, delete_original=False,
                     renamed='Corrupt', game=None, date=None, time=None, total_disk=None, used_disk=None, free_disk=None)
                     self.show_status(f'The report for the corrupt file has been updated.')
-
-                    continue
-
-                try:
-                    concatenate_clips = self.slicer.concatenate_clips(clips_list)
-                    self.show_status(f'Clip {index} has been concatenated.')
-
-                    self.slicer.render_clip(concatenate_clips, renamer.game_pattern(), output_path)
-                    self.show_status(f'Clip {index} has been rendered.')
-
-                except OSError as error:
-                    self.show_status(f'Error! In the render process.')
-                    print(f'Error: {error}')
                     continue
 
                 if self.btn_toggle_delete.isChecked():
@@ -127,8 +115,21 @@ class RenderThread(QThread):
                     self.show_status(f'Original file {file} has been deleted.')
 
                 self.signal_render.emit(100)
+                self.signal_processed.emit('processed', f'{index}/{len(valid_files)} clips processed.')
+                print(f'{index}/{len(valid_files)} clips processed.')
                 self.signal_processed.emit('hide', None)
                 QThread.msleep(1000)
+
+            try:
+                concatenate_clips = self.slicer.concatenate_clips(clips_list)
+                self.show_status(f'Clip {index} has been concatenated.')
+
+                self.slicer.render_clip(concatenate_clips, renamer.game_pattern(), output_path)
+                self.show_status(f'Clip {index} has been rendered.')
+
+            except OSError as error:
+                self.show_status(f'Error! In the render process.')
+                print(f'Error: {error}')
 
             self.btn_go.setEnabled(True)
             self.btn_toggle_delete.setEnabled(True)
