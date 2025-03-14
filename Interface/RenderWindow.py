@@ -8,6 +8,7 @@ from PyQt5.QtCore import QThread # To create threads.
 # Local Classes:
 from Logic.FileManager import FileManager # Import FileManager local class.
 from Logic.Slicer import Slicer # Import Slicer local class.
+from Interface.SettingsController import SettingsController # Import SettingsController local class.
 from Interface.Window import Window # Import Window local class.
 from Threads.RenderThread import RenderThread # Import RenderThread local class.
 from Threads.ProgressThread import ProgressThread # Import ProgressThread local class.
@@ -17,6 +18,7 @@ class RenderWindow(Window):
         super().__init__()
         self.file_manager = FileManager()
         self.slicer = Slicer()
+        self.settings_controller = SettingsController()
         self.render_thread = None
         self.progress_thread = None
 
@@ -50,12 +52,12 @@ class RenderWindow(Window):
         btn_back.setGeometry(430, 205, 60, 35)
         btn_back.clicked.connect(self.close)
         btn_back.clicked.connect(self.stop_rendering)
-        btn_back.clicked.connect(self.controller.execute_main_window)
+        btn_back.clicked.connect(lambda: self.controller.get_main_window().open())
 
         self.btn_settings = self.button_config('⚙️', 'lightblue', 'Arial', 14, tooltip_text='Settings', style='padding-top: 0px; padding-bottom: 4px;')
         self.btn_settings.setGeometry(430, 165, 60, 35)
-        self.btn_settings.clicked.connect(self.close)
-        self.btn_settings.clicked.connect(self.controller.execute_settings_window)
+        self.btn_settings.clicked.connect(lambda: self.setDisabled(True))
+        self.btn_settings.clicked.connect(lambda: self.controller.get_settings_window().open())
 
         self.btn_toggle_delete = self.button_config('Delete: OFF', 'lightcoral', 'Arial', 12, tooltip_text='Delete original video')
         self.btn_toggle_delete.setGeometry(265, 75, 130, 35)
@@ -98,7 +100,7 @@ class RenderWindow(Window):
         self.btn_settings.setEnabled(False)
 
         # Instances of the threads
-        self.render_thread = RenderThread(self.file_manager, self.slicer, self.pb_progress, self.btn_toggle_delete, self.btn_start)
+        self.render_thread = RenderThread(self.file_manager, self.slicer, self.settings_controller, self.pb_progress, self.btn_toggle_delete, self.btn_start)
         self.progress_thread = ProgressThread(self.pb_progress)
 
         # Connect the signals
@@ -162,4 +164,3 @@ class RenderWindow(Window):
             self.lbl_name.hide()
             self.lbl_status.hide()
             self.lbl_time.hide()
-

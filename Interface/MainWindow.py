@@ -54,7 +54,7 @@ class MainWindow(Window):
         btn_slice = super().button_config("Slice", "lightblue", "Arial", 16, tooltip_text="Go to the render window")
         btn_slice.setGeometry(155, 100, 200, 50)
         btn_slice.clicked.connect(self.close) # Hide last window.
-        btn_slice.clicked.connect(self.controller.execute_render_window) # Start the new window.
+        btn_slice.clicked.connect(lambda: self.controller.get_render_window().open()) # Start the new window.
         # btn_slice.clicked.connect(self.start_render_thread)
 
         # Exit Button:

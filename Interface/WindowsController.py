@@ -13,11 +13,11 @@ class WindowsController():
         self.render_window.set_controller(self)
         self.settings_window.set_controller(self)
 
-    def execute_main_window(self):
-        self.main_window.open()
+    def get_main_window(self):
+        return self.main_window
 
-    def execute_render_window(self):
-        self.render_window.open()
+    def get_render_window(self):
+        return self.render_window
 
-    def execute_settings_window(self):
-        self.settings_window.open()
+    def get_settings_window(self):
+        return self.settings_window

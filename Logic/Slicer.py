@@ -28,6 +28,8 @@ class Slicer():
         self.__limit = limit
         self.__text_position = text_position
         self.__transition_duration = transition_duration
+        self.__run_transitions = True
+        self.__show_video_text = True
 
     def get_duration(self):
         '''Get the duration of the clip.'''
@@ -77,9 +79,9 @@ class Slicer():
 
         return slice_clip
 
-    def overlay_text(self, clip, input_text:str, font_size:int=25, color:str='white'):
+    def overlay_text(self, clip, input_text:str, font_size:int=25, color_text:str='white'):
         '''Add text to the clip.'''
-        text = TextClip(input_text, font_size, color, font="Arial-Bold")
+        text = TextClip(input_text, fontsize=font_size, color=color_text, font='Arial-Bold')
         if self.get_text_position() is not None:
             text = text.set_position(self.get_text_position()).set_duration(clip.duration)
         else:

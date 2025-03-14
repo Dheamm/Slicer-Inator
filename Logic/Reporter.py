@@ -5,9 +5,9 @@ from os import path # To verify if the file exists.
 
 class Reporter():
     '''Report or summary of the processes performed.'''
-    def __init__(self, output_path):
+    def __init__(self, output_path, file_name='report.csv'):
         self.__output_path = output_path
-        self.__file_name = 'report.csv'
+        self.__file_name = file_name
 
     def get_file_name(self):
         '''Get the file name.'''

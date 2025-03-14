@@ -22,7 +22,7 @@ def start_application():
     app = QApplication([]) # Create the application to show the interface.
     interface = WindowsController() # Instance of MainWindow
 
-    interface.execute_main_window() # Show the window with a parameter of RenderWindow.
+    interface.get_main_window().open() # Show the window with a parameter of RenderWindow.
     exit(app.exec_()) # Execute the event loop.
 
 if __name__ == '__main__':
@@ -43,8 +43,10 @@ if __name__ == '__main__':
 # Todo: Si el usario ejecuta el programa, que deba seleccionar una input path. ## Se selecciona por defecto. ✔️
 
 ## Pending tasks: ##
-#Interface:
+#Refaactor:
+# Todo: Tener una clase controlador (Al estilo MVC (Model-View-Controller)) que maneje los atributos de settings y centralizarlo ahí, tener las rutas y otras cosas y que esta sea singelton.
 
+#Interface:
 # Todo: Que la barra sea mas precisa (y real).
 # Todo: Embellecer la interfaz grafica.
 # Todo: Agregar una ventana emergente o simplemente un avis cuando haya un error.
@@ -56,6 +58,11 @@ if __name__ == '__main__':
 # Todo: Si el proceso termina con un archivo corrupto la barra sigue.
 
 # Funionalities:
+# Todo: En settings al cambiar a perclip que automaticamente se quite las transiciones y se bloquee el ticket de transiciones.
+# Todo: Que en settings se puedan editar varias cosas de la etiqueta de overlay, como el fondo el color, fuente y mas
+# Todo: En el overlay si es que un clip estaba corrupto pueden aparecer cosas como clip 1 en el nombre y saltarse a clip 3 por ejemplo.
+# Todo: Cuando no se pueda renderizar que muestro un mensaje de error en la interfaz.
+# Todo: Agregar metadata al video para saber si ya fue renderizado.
 # Todo: Agregar un log de todo lo que ha hecho el programa visible desde la interfaz. Que muestre los mensaje del proceso.
 # Todo: Que la fecha salga en el nombre en el formato que el usuario quiera.
 # Todo: Opción para poder pausar y reanudar el proceso.

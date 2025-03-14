@@ -12,6 +12,8 @@ from PyQt5.QtGui import QDoubleValidator # To validate the input.
 from PyQt5.QtGui import QRegularExpressionValidator
 from PyQt5.QtCore import QRegularExpression
 from PyQt5.QtWidgets import QComboBox # To create comboboxes
+from PyQt5.QtWidgets import QCheckBox # To create checkboxes
+from PyQt5.QtWidgets import QLabel # To create labels.
 
 class Window(QMainWindow):
     def window_parameters(self, title, color, width=500, height=250):
@@ -75,3 +77,31 @@ class Window(QMainWindow):
         font = QFont('Arial', 8, QFont.Bold)
         cb.setFont(font)
         return cb
+    
+    def checkbox_config(self, geometry:tuple[int,int,int,int], tooltip:str=None):
+        '''Method to configure the checkboxes.'''
+        cb = QCheckBox(self)
+        cb.setGeometry(*geometry)
+        cb.setStyleSheet("""
+            QCheckBox::indicator {
+                width: 20px; 
+                height: 20px; 
+                border-radius: 10px; /* Circle */
+                border: 2px solid black;
+                background-color: white;
+            }
+            QCheckBox::indicator:checked {
+                background-color: lightblue;
+                border: 2px solid black;
+            }
+        """)
+        cb.setToolTip(tooltip)
+        return cb
+
+    def label_config(self, geometry:tuple[int,int,int,int], text:str, tooltip:str=None, style:str=None):
+        '''Method to configure the labels.'''
+        lbl = QLabel(text, self)
+        lbl.setGeometry(*geometry)
+        lbl.setStyleSheet(style)
+        lbl.setToolTip(tooltip)
+        return lbl
