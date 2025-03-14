@@ -21,11 +21,9 @@ class Slicer():
 
     def __init__(self, 
                 duration:int = 45, 
-                limit:int = 10, 
                 text_position:tuple = ("left", "bottom"),
                 transition_duration:float = 0.5):
         self.__duration = duration
-        self.__limit = limit
         self.__text_position = text_position
         self.__transition_duration = transition_duration
         self.__run_transitions = True
@@ -38,14 +36,6 @@ class Slicer():
     def set_duration(self, new_duration):
         '''Set the duration of the clip.'''
         self.__duration = new_duration
-
-    def get_limit(self):
-        '''Get the limit of the clips.'''
-        return self.__limit
-    
-    def set_limit(self, new_limit):
-        '''Set the limit of the clips.'''
-        self.__limit = new_limit
 
     def get_text_position(self):
         '''Get the position of the text.'''

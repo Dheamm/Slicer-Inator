@@ -1,7 +1,7 @@
 '''
 Prepared by: Ítalo Osorio
 Date of creation: 06/06/2024
-Last modification: 01/03/2025
+Last modification: 14/03/2025
 
 Purpose: Refactor the video cutter script “Slicer Inator.py” in classes and methods.
 PS: My first “POO” test in Python :D!
@@ -12,8 +12,6 @@ from sys import exit # To close the application.
 from PyQt5.QtWidgets import QApplication # To create the interface application.
 
 # Local Classes:
-from Logic.FileManager import FileManager # Import FileManager local class.
-from Logic.Slicer import Slicer # Import Slicer local class.
 from Interface.WindowsController import WindowsController # Import WindowsController local class.
 
 
@@ -58,6 +56,7 @@ if __name__ == '__main__':
 # Todo: Si el proceso termina con un archivo corrupto la barra sigue.
 
 # Funionalities:
+# Todo: Que se descuenten en el conteo los clips corruptos y que solo intente renderizar en base al limite de clips y no a la cantidad archivos.
 # Todo: En settings al cambiar a perclip que automaticamente se quite las transiciones y se bloquee el ticket de transiciones.
 # Todo: Que en settings se puedan editar varias cosas de la etiqueta de overlay, como el fondo el color, fuente y mas
 # Todo: En el overlay si es que un clip estaba corrupto pueden aparecer cosas como clip 1 en el nombre y saltarse a clip 3 por ejemplo.

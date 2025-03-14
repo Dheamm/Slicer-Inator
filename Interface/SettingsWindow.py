@@ -37,10 +37,7 @@ class SettingsWindow(Window):
         btn_back.clicked.connect(lambda: self.controller.get_render_window().setDisabled(False))
 
         # DURATION:
-        lbl_duration = QLabel('Duration:', self)
-        lbl_duration.setStyleSheet("font-weight: bold; font-size: 20px;")
-        lbl_duration.setGeometry(10, 0, 100, 70)
-
+        lbl_duration = super().label_config((10, 0, 100, 70), 'Duration:', tooltip='Set the duration', style=lbl_style)
         self.txt_duration = super().input_config((160, 20, 50, 30), 'int', 
         placeholder=str(self.slicer.get_duration()), 
         tooltip=f'Duration: {(self.slicer.get_duration())}')
@@ -52,7 +49,22 @@ class SettingsWindow(Window):
         self.btn_set_duration.clicked.connect(lambda: self.show_message('Duration', 'Duration set successfully!'))
         self.btn_set_duration.clicked.connect(lambda: self.txt_duration.setPlaceholderText(str(self.slicer.get_duration())))
         self.btn_set_duration.clicked.connect(lambda: self.txt_duration.setToolTip(f'Duration: {self.slicer.get_duration()}'))
-        self.txt_duration.textChanged.connect(self.check_input)
+        self.txt_duration.textChanged.connect(lambda text: self.btn_set_duration.setEnabled(bool(text)))
+
+        # CLIP LIMIT:
+        lbl_clips_limit = super().label_config((300, 0, 120, 70), 'Clips limit:', tooltip='Set the clips limit', style=lbl_style)
+        self.txt_clips_limit = super().input_config((420, 20, 50, 30), 'int',
+        placeholder=str(self.settings_controller.get_clips_limit()),
+        tooltip=f'Clips limit: {self.settings_controller.get_clips_limit()}')
+
+        self.btn_set_clips_limit = self.button_config('Set', 'lightblue', 'Arial', 10, tooltip_text='Set the clips limit')
+        self.btn_set_clips_limit.setGeometry(480, 20, 50, 30)
+        self.btn_set_clips_limit.clicked.connect(lambda: self.settings_controller.set_clips_limit(int(self.txt_clips_limit.text())))
+        self.btn_set_clips_limit.clicked.connect(lambda: self.show_message('Clips limit', 'Clips limit set successfully!'))
+        self.btn_set_clips_limit.clicked.connect(lambda: self.txt_clips_limit.setPlaceholderText(str(self.settings_controller.get_clips_limit())))
+        self.btn_set_clips_limit.clicked.connect(lambda: self.txt_clips_limit.setToolTip(f'Clips limit: {self.settings_controller.get_clips_limit()}'))
+        self.txt_clips_limit.textChanged.connect(lambda text: self.btn_set_clips_limit.setEnabled(bool(text)))
+        
 
         # VIDEO TEXT POSITION:
         lbl_position = QLabel('Text position:', self)
@@ -82,13 +94,6 @@ class SettingsWindow(Window):
         self.chk_render_per_clip.stateChanged.connect(lambda: self.settings_controller.set_render_per_clip(self.chk_render_per_clip.isChecked()))
 
         self.show()
-
-    def check_input(self, input):
-        '''Check if the input is valid.'''
-        if input.isdigit():
-            self.btn_set_duration.setEnabled(True)
-        else:
-            self.btn_set_duration.setEnabled(False)
 
     def on_combobox_changed(self):
         '''Method to execute when the combobox is changed.'''

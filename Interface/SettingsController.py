@@ -6,12 +6,23 @@ class SettingsController:
             cls._instance = super().__new__(cls)
         return cls._instance
     
-    def __init__(self, show_transition:bool=True, 
+    def __init__(self, 
+                clips_limit:int=10000,
+                show_transition:bool=True, 
                 show_overlay:bool=True, 
                 render_per_clip:bool=False):
+        self.__clips_limit = clips_limit
         self.__show_transition = show_transition
         self.__show_overlay = show_overlay
         self.__render_per_clip = render_per_clip
+
+    def get_clips_limit(self):
+        '''Get the limit of clips.'''
+        return self.__clips_limit
+    
+    def set_clips_limit(self, new_limit:int):
+        '''Set the limit of clips.'''
+        self.__clips_limit = new_limit
 
     def get_show_transition(self):
         '''Get the status of the transitions.'''

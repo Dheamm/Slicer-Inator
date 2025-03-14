@@ -43,99 +43,104 @@ class RenderThread(QThread):
 
             for index, file in enumerate(valid_files):
                 index += 1
-                renamer = Renamer(file, index)
-                total_disk, used_disk, free_disk = self.file_manager.get_method('disk_space')
+                if self.settings_controller.get_clips_limit() >= index:
 
-                # -- FLOW -- #
-                self.signal_render.emit(0)
-                self.signal_render.emit(1)
-                self.signal_processed.emit('name', f'Name: {file}')
-                if index == 1:
-                    self.signal_processed.emit('processed', f'{0}/{len(valid_files)} clips processed.')
-                    print(f'{0}/{len(valid_files)} clips processed.')
-                print(f'Name: {file}')
+                    renamer = Renamer(file, index)
+                    total_disk, used_disk, free_disk = self.file_manager.get_method('disk_space')
 
-                try:
-                    timer_start = time()
-                    self.show_status(f'Clip {index} timer started.')
+                    # -- FLOW -- #
+                    self.signal_render.emit(0)
+                    self.signal_render.emit(1)
+                    self.signal_processed.emit('name', f'Name: {file}')
+                    if index == 1:
+                        self.signal_processed.emit('processed', f'{0}/{len(valid_files)} clips processed.')
+                        print(f'{0}/{len(valid_files)} clips processed.')
+                    print(f'Name: {file}')
 
-                    # LOAD
-                    load_clip = self.slicer.load_clip(path, file)
-                    self.show_status(f'The clip {index} has been loaded.')
+                    try:
+                        timer_start = time()
+                        self.show_status(f'Clip {index} timer started.')
 
-                    # SLICE
-                    slice_clip = self.slicer.slice_clip(load_clip)
-                    self.show_status(f'The clip {index} has been sliced.')
+                        # LOAD
+                        load_clip = self.slicer.load_clip(path, file)
+                        self.show_status(f'The clip {index} has been loaded.')
 
-                    # OVERLAY TEXT
-                    overlay_text = slice_clip
-                    if self.settings_controller.get_show_overlay():
-                        overlay_text = self.slicer.overlay_text(slice_clip, renamer.file_name(path, file))
-                        self.show_status(f'Overlay text has been added in the clip {index}.')
+                        # SLICE
+                        slice_clip = self.slicer.slice_clip(load_clip)
+                        self.show_status(f'The clip {index} has been sliced.')
 
-                    # TRANSITIONS
-                    if self.settings_controller.get_show_transition():
-                        if index == 1: # First clip.
-                            transition = self.slicer.transition_fade_out(overlay_text)
-                            self.show_status(f'Fading-out transition added in the clip {index}.')
+                        # OVERLAY TEXT
+                        overlay_text = slice_clip
+                        if self.settings_controller.get_show_overlay():
+                            overlay_text = self.slicer.overlay_text(slice_clip, renamer.file_name(path, file))
+                            self.show_status(f'Overlay text has been added in the clip {index}.')
 
-                            clips_list.append(transition)
+                        # TRANSITIONS
+                        if self.settings_controller.get_show_transition():
+                            if index == 1: # First clip.
+                                transition = self.slicer.transition_fade_out(overlay_text)
+                                self.show_status(f'Fading-out transition added in the clip {index}.')
 
-                        elif index == (len(valid_files)): # Last clip.
-                            transition = self.slicer.transition_fade_in(overlay_text)
-                            self.show_status(f'Fading-in transition added in the clip {index}.')
+                                clips_list.append(transition)
 
-                            clips_list.append(transition)
+                            elif index == (len(valid_files)): # Last clip.
+                                transition = self.slicer.transition_fade_in(overlay_text)
+                                self.show_status(f'Fading-in transition added in the clip {index}.')
 
-                        else: # Middle clips.
-                            transition_fade_out = self.slicer.transition_fade_out(overlay_text)
-                            self.show_status(f'Fading-out transition added in the clip {index}.')
+                                clips_list.append(transition)
 
-                            transition = self.slicer.transition_fade_in(transition_fade_out)
-                            self.show_status(f'Fading-in transition added in the clip {index}.')
+                            else: # Middle clips.
+                                transition_fade_out = self.slicer.transition_fade_out(overlay_text)
+                                self.show_status(f'Fading-out transition added in the clip {index}.')
 
-                            clips_list.append(transition)
-                    else:
-                        clips_list.append(overlay_text)
+                                transition = self.slicer.transition_fade_in(transition_fade_out)
+                                self.show_status(f'Fading-in transition added in the clip {index}.')
 
-                    if self.settings_controller.get_render_per_clip():
-                        # RENDER
-                        self.slicer.render_clip(clips_list[index-1-errors], renamer.file_name(path, file), output_path)
-                        self.show_status(f'Clip {index} has been rendered.')
+                                clips_list.append(transition)
+                        else:
+                            clips_list.append(overlay_text)
 
-                    timer_end = time()
-                    self.show_status(f'Clip {index} timer ended.')
+                        if self.settings_controller.get_render_per_clip():
+                            # RENDER
+                            self.slicer.render_clip(clips_list[index-1-errors], renamer.file_name(path, file), output_path)
+                            self.show_status(f'Clip {index} has been rendered.')
 
-                    total_time = int(timer_end - timer_start)
-                    print(f'Time: {total_time} seconds.\n')
-                    self.signal_processed.emit('time', f'Time: {total_time} seconds.')
+                        timer_end = time()
+                        self.show_status(f'Clip {index} timer ended.')
 
-                    # Update report file.
-                    reporter.file_update(clip_number=index, original_name=file, delete_original=self.btn_toggle_delete.isChecked(),
-                    renamed=renamer.file_name(path, file), game=renamer.game_pattern(), date=renamer.date_pattern(path, file), 
-                    time=total_time, total_disk=total_disk, used_disk=used_disk, free_disk=free_disk)
-                    self.show_status(f'Report file has been updated.')
+                        total_time = int(timer_end - timer_start)
+                        print(f'Time: {total_time} seconds.\n')
+                        self.signal_processed.emit('time', f'Time: {total_time} seconds.')
 
-                except OSError as error:
-                    self.show_status(f'Error! In the flow process.')
-                    # print(f'Error: {error}')
+                        # Update report file.
+                        reporter.file_update(clip_number=index, original_name=file, delete_original=self.btn_toggle_delete.isChecked(),
+                        renamed=renamer.file_name(path, file), game=renamer.game_pattern(), date=renamer.date_pattern(path, file), 
+                        time=total_time, total_disk=total_disk, used_disk=used_disk, free_disk=free_disk)
+                        self.show_status(f'Report file has been updated.')
 
-                    reporter.file_update(clip_number=index, original_name=file, delete_original=False,
-                    renamed='Corrupt', game=None, date=None, time=None, total_disk=None, used_disk=None, free_disk=None)
-                    self.show_status(f'The report for the corrupt file has been updated.')
+                    except OSError as error:
+                        self.show_status(f'Error! In the flow process.')
+                        # print(f'Error: {error}')
 
-                    errors += 1
-                    continue
+                        reporter.file_update(clip_number=index, original_name=file, delete_original=False,
+                        renamed='Corrupt', game=None, date=None, time=None, total_disk=None, used_disk=None, free_disk=None)
+                        self.show_status(f'The report for the corrupt file has been updated.')
 
-                if self.btn_toggle_delete.isChecked():
-                    self.file_manager.delete_original_files(file)
-                    self.show_status(f'Original file {file} has been deleted.')
+                        errors += 1
+                        continue
 
-                self.signal_render.emit(100)
-                self.signal_processed.emit('processed', f'{index}/{len(valid_files)} clips processed.')
-                print(f'{index}/{len(valid_files)} clips processed.')
-                self.signal_processed.emit('hide', None)
-                QThread.msleep(1000)
+                    if self.btn_toggle_delete.isChecked():
+                        self.file_manager.delete_original_files(file)
+                        self.show_status(f'Original file {file} has been deleted.')
+
+                    self.signal_render.emit(100)
+                    self.signal_processed.emit('processed', f'{index}/{len(valid_files)} clips processed.')
+                    print(f'{index}/{len(valid_files)} clips processed.')
+                    self.signal_processed.emit('hide', None)
+                    QThread.msleep(1000)
+
+                else:
+                    self.show_status(f'Clips limit reached ({self.settings_controller.get_clips_limit()}).')
 
             try:
                 if not self.settings_controller.get_render_per_clip():
