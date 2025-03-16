@@ -59,6 +59,7 @@ class SettingsWindow(Window):
 
         self.btn_set_clips_limit = self.button_config('Set', 'lightblue', 'Arial', 10, tooltip_text='Set the clips limit')
         self.btn_set_clips_limit.setGeometry(480, 20, 50, 30)
+        self.btn_set_clips_limit.setEnabled(False)
         self.btn_set_clips_limit.clicked.connect(lambda: self.settings_controller.set_clips_limit(int(self.txt_clips_limit.text())))
         self.btn_set_clips_limit.clicked.connect(lambda: self.show_message('Clips limit', 'Clips limit set successfully!'))
         self.btn_set_clips_limit.clicked.connect(lambda: self.txt_clips_limit.setPlaceholderText(str(self.settings_controller.get_clips_limit())))

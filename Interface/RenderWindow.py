@@ -87,8 +87,6 @@ class RenderWindow(Window):
         self.lbl_time.setGeometry(50, 210, 200, 30)
         self.lbl_time.hide()
 
-
-
         self.show()
 
     def change_toggle_delete(self):
