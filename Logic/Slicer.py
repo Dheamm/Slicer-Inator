@@ -20,14 +20,24 @@ class Slicer():
         return cls._instance
 
     def __init__(self, 
+                logger = None,
                 duration:int = 45, 
                 text_position:tuple = ("left", "bottom"),
                 transition_duration:float = 0.5):
+        self.__logger = logger
         self.__duration = duration
         self.__text_position = text_position
         self.__transition_duration = transition_duration
         self.__run_transitions = True
         self.__show_video_text = True
+
+    def get_logger(self):
+        '''Get the logger.'''
+        return self.__logger
+    
+    def set_logger(self, new_logger):
+        '''Set the logger.'''
+        self.__logger = new_logger
 
     def get_duration(self):
         '''Get the duration of the clip.'''
@@ -102,7 +112,7 @@ class Slicer():
                                     audio_codec="aac",
                                     ffmpeg_params=["-vcodec", "h264_nvenc"],
                                     bitrate="16000k",
-                                    logger='bar', # None or 'bar' to display a progress bar.
+                                    logger=self.get_logger(), # None or 'bar' to display a progress bar.
                                     temp_audiofile=temp_audio, # The audio file is temporary.
                                     remove_temp=True # Remove the temporary file.
                                     )

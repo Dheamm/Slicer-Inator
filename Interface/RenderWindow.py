@@ -11,7 +11,7 @@ from Logic.Slicer import Slicer # Import Slicer local class.
 from Interface.SettingsController import SettingsController # Import SettingsController local class.
 from Interface.Window import Window # Import Window local class.
 from Threads.RenderThread import RenderThread # Import RenderThread local class.
-from Threads.ProgressThread import ProgressThread # Import ProgressThread local class.
+from Logic.BarLogger import BarLogger # Import BarLogger local class.
 
 class RenderWindow(Window):
     def __init__(self):
@@ -38,6 +38,9 @@ class RenderWindow(Window):
         self.pb_progress.setGeometry(100, 20, 300, 50)
         self.pb_progress.setRange(0, 100)
         self.pb_progress.setStyleSheet("border: 2px solid #2196F3; border-radius: 5px; background-color: #E0E0E0;")
+
+        self.lbl_status_logger = super().label_config((402, 60, 100, 10), '0 / 0', tooltip='Status', style='font-weight: bold; font-size: 10px;')
+        self.lbl_status_logger.hide()
 
         # Buttons:
         self.btn_start = self.button_config('▶', 'green', 'Arial', 30, tooltip_text='Start')
@@ -98,29 +101,27 @@ class RenderWindow(Window):
         self.btn_toggle_delete.setEnabled(False)
         self.btn_start.setEnabled(False)
         self.btn_settings.setEnabled(False)
+        self.lbl_status_logger.show()
 
         # Instances of the threads
-        self.render_thread = RenderThread(self.file_manager, self.slicer, self.settings_controller, self.pb_progress, self.btn_toggle_delete, self.btn_start)
-        self.progress_thread = ProgressThread(self.pb_progress)
+        self.render_thread = RenderThread(self.file_manager, self.slicer, self.settings_controller, self.btn_toggle_delete, self.btn_start)
 
         # Connect the signals
-        self.render_thread.signal_render.connect(self.update_progress)
-        self.progress_thread.signal_progress.connect(self.update_progress)
+        self.render_thread.signal_progress_logger.connect(self.update_progress) # Percentage of the progress bar.
+        self.render_thread.signal_status_logger.connect(self.update_status_logger) # Status logger of the progress bar.
         self.render_thread.signal_status.connect(self.handle_render_error)
         self.render_thread.signal_processed.connect(self.update_info)
         
         # Start the threads
         self.render_thread.start()
-        self.progress_thread.start()
 
     def handle_render_error(self):
         print("Error! Stopping ProgressThread.")
         self.stop_rendering()
 
     def stop_rendering(self):
-        if self.render_thread and self.progress_thread is not None:
+        if self.render_thread is not None:
             self.render_thread.terminate()
-            self.progress_thread.terminate()
 
         self.btn_toggle_delete.setEnabled(True)
         self.btn_start.setEnabled(True)
@@ -129,6 +130,7 @@ class RenderWindow(Window):
         self.lbl_name.hide()
         self.lbl_status.hide()
         self.lbl_time.hide()
+        self.lbl_status_logger.hide()
 
         self.update_progress(-1)
 
@@ -139,6 +141,9 @@ class RenderWindow(Window):
     def update_progress(self, value):
         self.pb_progress.setValue(value)
         self.pb_progress.update()
+
+    def update_status_logger(self, curren_value, total_value):
+        self.lbl_status_logger.setText(f'{curren_value} / {total_value}')
 
     def update_info(self, info_type, text):
         '''Update the information of the render window.'''

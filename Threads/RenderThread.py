@@ -9,18 +9,19 @@ from os.path import join # To join the paths.
 # Local Classes:
 from Logic.Renamer import Renamer # Import Renamer local class.
 from Logic.Reporter import Reporter # Import Reporter local class.
+from Logic.BarLogger import BarLogger # Import BarLogger local class.
 
 class RenderThread(QThread):
-    signal_render = pyqtSignal(int)
     signal_status = pyqtSignal(bool)
     signal_processed = pyqtSignal(str, object)
+    signal_progress_logger = pyqtSignal(int)
+    signal_status_logger = pyqtSignal(int, int)
 
-    def __init__(self, file_manager, slicer, settings_controller, progress_bar, btn_toggle_delete, btn_go):
+    def __init__(self, file_manager, slicer, settings_controller, btn_toggle_delete, btn_go):
         super().__init__()
         self.file_manager = file_manager
         self.slicer = slicer
         self.settings_controller = settings_controller
-        self.progress_bar = progress_bar
         self.btn_toggle_delete = btn_toggle_delete
         self.btn_go = btn_go
 
@@ -32,6 +33,9 @@ class RenderThread(QThread):
     def run(self):
         '''Run the render process.'''
         try:
+            progress_logger = BarLogger(self.signal_progress_logger, self.signal_status_logger)
+            self.slicer.set_logger(progress_logger)
+
             path = self.file_manager.get_input_path()
             valid_files = self.file_manager.get_method('valid_files_list')
             self.file_manager.create_output_path()
@@ -49,8 +53,6 @@ class RenderThread(QThread):
                     total_disk, used_disk, free_disk = self.file_manager.get_method('disk_space')
 
                     # -- FLOW -- #
-                    self.signal_render.emit(0)
-                    self.signal_render.emit(1)
                     self.signal_processed.emit('name', f'Name: {file}')
                     if index == 1:
                         self.signal_processed.emit('processed', f'{0}/{len(valid_files)} clips processed.')
@@ -133,7 +135,6 @@ class RenderThread(QThread):
                         self.file_manager.delete_original_files(file)
                         self.show_status(f'Original file {file} has been deleted.')
 
-                    self.signal_render.emit(100)
                     self.signal_processed.emit('processed', f'{index}/{len(valid_files)} clips processed.')
                     print(f'{index}/{len(valid_files)} clips processed.')
                     self.signal_processed.emit('hide', None)

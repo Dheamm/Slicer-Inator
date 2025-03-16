@@ -1,7 +1,7 @@
 '''
 Prepared by: Ítalo Osorio
 Date of creation: 06/06/2024
-Last modification: 14/03/2025
+Last modification: 15/03/2025
 
 Purpose: Refactor the video cutter script “Slicer Inator.py” in classes and methods.
 PS: My first “POO” test in Python :D!
@@ -50,12 +50,15 @@ if __name__ == '__main__':
 # Todo: Agregar una ventana emergente o simplemente un avis cuando haya un error.
 
 #Errors:
+# Todo: El boton de set de clip limit si no agregas nada se crashea, hay que bloquearlo.
 # Todo: Si en settings ingresan valores invalidos controlarlos.
 # Todo: Hay situaciones (sobre todo cuando el render tira una excepción) que el ciclo de la barra sigue.
 # Todo: Mejorar el manejo de errores y ser mas especifico con el.
 # Todo: Si el proceso termina con un archivo corrupto la barra sigue.
+# Todo: Cuando cierras la ventana de settings la de render queda bloqueada.
 
 # Funionalities:
+# Todo: Que render window te muestre si está cortando o renderizando y que la barra cambie de color segun esto.
 # Todo: Que se descuenten en el conteo los clips corruptos y que solo intente renderizar en base al limite de clips y no a la cantidad archivos.
 # Todo: En settings al cambiar a perclip que automaticamente se quite las transiciones y se bloquee el ticket de transiciones.
 # Todo: Que en settings se puedan editar varias cosas de la etiqueta de overlay, como el fondo el color, fuente y mas
