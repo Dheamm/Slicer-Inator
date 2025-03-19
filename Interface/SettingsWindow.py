@@ -31,8 +31,7 @@ class SettingsWindow(Window):
         self.setCentralWidget(central_widget)
 
         # BACK:
-        btn_back = self.button_config('↩️', 'lightblue', 'Arial', 20, tooltip_text='Back to the render window')
-        btn_back.setGeometry(520, 460, 60, 35)
+        btn_back = self.button_config((520, 460, 60, 35), '↩️', 'lightblue', 'Arial', 20, tooltip_text='Back to the render window')
         btn_back.clicked.connect(self.close)
         btn_back.clicked.connect(lambda: self.controller.get_render_window().setDisabled(False))
 
@@ -42,8 +41,7 @@ class SettingsWindow(Window):
         placeholder=str(self.slicer.get_duration()), 
         tooltip=f'Duration: {(self.slicer.get_duration())}')
 
-        self.btn_set_duration = self.button_config('Set', 'lightblue', 'Arial', 10, tooltip_text='Set the duration')
-        self.btn_set_duration.setGeometry(220, 20, 50, 30)
+        self.btn_set_duration = self.button_config((220, 20, 50, 30), 'Set', 'lightblue', 'Arial', 10, tooltip_text='Set the duration')
         self.btn_set_duration.setEnabled(False)
         self.btn_set_duration.clicked.connect(lambda: self.slicer.set_duration(int(self.txt_duration.text())))
         self.btn_set_duration.clicked.connect(lambda: self.show_message('Duration', 'Duration set successfully!'))
@@ -57,8 +55,7 @@ class SettingsWindow(Window):
         placeholder=str(self.settings_controller.get_clips_limit()),
         tooltip=f'Clips limit: {self.settings_controller.get_clips_limit()}')
 
-        self.btn_set_clips_limit = self.button_config('Set', 'lightblue', 'Arial', 10, tooltip_text='Set the clips limit')
-        self.btn_set_clips_limit.setGeometry(480, 20, 50, 30)
+        self.btn_set_clips_limit = self.button_config((480, 20, 50, 30), 'Set', 'lightblue', 'Arial', 10, tooltip_text='Set the clips limit')
         self.btn_set_clips_limit.setEnabled(False)
         self.btn_set_clips_limit.clicked.connect(lambda: self.settings_controller.set_clips_limit(int(self.txt_clips_limit.text())))
         self.btn_set_clips_limit.clicked.connect(lambda: self.show_message('Clips limit', 'Clips limit set successfully!'))

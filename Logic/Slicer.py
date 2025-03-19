@@ -28,8 +28,6 @@ class Slicer():
         self.__duration = duration
         self.__text_position = text_position
         self.__transition_duration = transition_duration
-        self.__run_transitions = True
-        self.__show_video_text = True
 
     def get_logger(self):
         '''Get the logger.'''

@@ -37,33 +37,41 @@ class RenderWindow(Window):
         self.pb_progress = QProgressBar(self)
         self.pb_progress.setGeometry(100, 20, 300, 50)
         self.pb_progress.setRange(0, 100)
-        self.pb_progress.setStyleSheet("border: 2px solid #2196F3; border-radius: 5px; background-color: #E0E0E0;")
+        # self.pb_progress.setStyleSheet("border: 2px solid black; border-radius: 5px; background-color: #E0E0E0;")
+        self.pb_progress.setStyleSheet("""
+            QProgressBar {
+                border: 2px solid black;
+                border-radius: 5px;
+                background-color: #E0E0E0;
+                text-align: center;
+                font-weight: bold;
+                font-size: 16px;
+            }
+            QProgressBar::chunk {
+                background-color: #2196F3;
+            }
+        """)
 
         self.lbl_status_logger = super().label_config((402, 60, 100, 10), '0 / 0', tooltip='Status', style='font-weight: bold; font-size: 10px;')
         self.lbl_status_logger.hide()
 
         # Buttons:
-        self.btn_start = self.button_config('▶', 'green', 'Arial', 30, tooltip_text='Start')
-        self.btn_start.setGeometry(105, 75, 35, 35)
+        self.btn_start = self.button_config((105, 75, 35, 35), '▶', '#90CFA0', 'Arial', 30, tooltip_text='Start', style='border-radius: 17.5px; border: 2px solid #388E3C;')
         self.btn_start.clicked.connect(self.start_rendering)
 
-        btn_stop = self.button_config('⬛', 'lightcoral', 'Arial', 15, tooltip_text='Stop', style='padding-top: 0px; padding-bottom: 2px; padding-left: 0.4px;')
-        btn_stop.setGeometry(145, 75, 35, 35)
+        btn_stop = self.button_config((145, 75, 35, 35), '⬛', 'lightcoral', 'Arial', 15, tooltip_text='Stop', style='padding-top: 0px; padding-bottom: 2px; padding-left: 0.4px;')
         btn_stop.clicked.connect(self.stop_rendering)
 
-        btn_back = self.button_config('↩️', 'lightblue', 'Arial', 20, tooltip_text='Back to the main window')
-        btn_back.setGeometry(430, 205, 60, 35)
+        btn_back = self.button_config((430, 205, 60, 35), '↩️', '#ADD8E6', 'Arial', 20, tooltip_text='Back to the main window')
         btn_back.clicked.connect(self.close)
         btn_back.clicked.connect(self.stop_rendering)
         btn_back.clicked.connect(lambda: self.controller.get_main_window().open())
 
-        self.btn_settings = self.button_config('⚙️', 'lightblue', 'Arial', 14, tooltip_text='Settings', style='padding-top: 0px; padding-bottom: 4px;')
-        self.btn_settings.setGeometry(430, 165, 60, 35)
+        self.btn_settings = self.button_config((430, 165, 60, 35), '⚙️', 'lightblue', 'Arial', 14, tooltip_text='Settings', style='padding-top: 0px; padding-bottom: 4px;')
         self.btn_settings.clicked.connect(lambda: self.setDisabled(True))
         self.btn_settings.clicked.connect(lambda: self.controller.get_settings_window().open())
 
-        self.btn_toggle_delete = self.button_config('Delete: OFF', 'lightcoral', 'Arial', 12, tooltip_text='Delete original video')
-        self.btn_toggle_delete.setGeometry(265, 75, 130, 35)
+        self.btn_toggle_delete = self.button_config((265, 75, 130, 35), 'Delete: OFF', 'lightcoral', 'Arial', 12, tooltip_text='Delete original video')
         self.btn_toggle_delete.setCheckable(True)
         self.btn_toggle_delete.clicked.connect(self.change_toggle_delete)
 

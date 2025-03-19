@@ -14,6 +14,7 @@ from PyQt5.QtCore import QRegularExpression
 from PyQt5.QtWidgets import QComboBox # To create comboboxes
 from PyQt5.QtWidgets import QCheckBox # To create checkboxes
 from PyQt5.QtWidgets import QLabel # To create labels.
+from PyQt5.QtGui import QColor
 
 class Window(QMainWindow):
     def window_parameters(self, title, color, width=500, height=250):
@@ -22,10 +23,20 @@ class Window(QMainWindow):
         self.setFixedSize(width, height) # Set fixed size
         self.setStyleSheet(f"background-color: {color}") # Set the background color
 
-    def button_config(self, text, background_color, font, font_size, tooltip_text, style='', bold=True):
+    def button_config(self, geometry:tuple[int,int,int,int], text, background_color, font, font_size, tooltip_text, style='', bold=True):
         '''Method to configure the buttons.'''
         btn = QPushButton(text, self) # Create the button
-        btn.setStyleSheet(f"background-color: {background_color}; {style}") # Set the background color
+        btn.setGeometry(*geometry)
+
+        color = QColor(background_color)
+
+        btn.setStyleSheet(f""" 
+                        background-color: {background_color};
+                        border-radius: {geometry[3] / 2}px; /* Circle */
+                        border: 2px solid {color.darker(130).name()};
+                        {style}
+                        """)
+
         btn.setFont(QFont(font, font_size, QFont.Bold if bold else QFont.Normal)) # Set the font
 
         QToolTip.setFont(QFont('Arial', 10, QFont.Bold)) # Set the tooltip font

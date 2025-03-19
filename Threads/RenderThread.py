@@ -16,6 +16,7 @@ class RenderThread(QThread):
     signal_processed = pyqtSignal(str, object)
     signal_progress_logger = pyqtSignal(int)
     signal_status_logger = pyqtSignal(int, int)
+    signal_color_bar = pyqtSignal(str)
 
     def __init__(self, file_manager, slicer, settings_controller, btn_toggle_delete, btn_go):
         super().__init__()

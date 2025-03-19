@@ -1,7 +1,7 @@
 '''
 Prepared by: Ítalo Osorio
 Date of creation: 06/06/2024
-Last modification: 15/03/2025
+Last modification: 18/03/2025
 
 Purpose: Refactor the video cutter script “Slicer Inator.py” in classes and methods.
 PS: My first “POO” test in Python :D!
@@ -45,6 +45,7 @@ if __name__ == '__main__':
 # Todo: Tener una clase controlador (Al estilo MVC (Model-View-Controller)) que maneje los atributos de settings y centralizarlo ahí, tener las rutas y otras cosas y que esta sea singelton.
 
 #Interface:
+# Todo: Hacer un modo oscuro
 # Todo: Que la barra sea mas precisa (y real).
 # Todo: Embellecer la interfaz grafica.
 # Todo: Agregar una ventana emergente o simplemente un avis cuando haya un error.
@@ -58,6 +59,8 @@ if __name__ == '__main__':
 # Todo: Cuando cierras la ventana de settings la de render queda bloqueada.
 
 # Funionalities:
+# Todo: Poder hacer la ventana mas grande o pequeña pero con botones para tener presets.
+# Todo: Cambiar la estetica de la barra de progreso.
 # Todo: Que render window te muestre si está cortando o renderizando y que la barra cambie de color segun esto.
 # Todo: Que se descuenten en el conteo los clips corruptos y que solo intente renderizar en base al limite de clips y no a la cantidad archivos.
 # Todo: En settings al cambiar a perclip que automaticamente se quite las transiciones y se bloquee el ticket de transiciones.
