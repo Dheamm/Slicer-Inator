@@ -18,6 +18,8 @@ from PyQt5.QtWidgets import QLabel # To create labels.
 from PyQt5.QtGui import QColor # To set the color.
 from PyQt5.QtWidgets import QProgressBar # To create progress bars.
 from PyQt5.QtCore import pyqtSignal
+import os
+from PyQt5.QtCore import QDir
 
 class Window(QMainWindow):
     def __init__(self, data_json):
@@ -176,8 +178,8 @@ class Window(QMainWindow):
     def combobox_settings(self, geometry:tuple[int,int], tooltip:str=None, items:list[str]=[]):
         '''Method to configure the comboboxes.'''
         cb = QComboBox(self)
-        ruta_imagen = r"C:\Users\Dheam\Downloads\down.png"
-        ruta_imagen = ruta_imagen.replace("\\", "/")
+        base_path = os.path.dirname(os.path.abspath(__file__))  # ruta del archivo actual
+        image_path = os.path.join(base_path, "Images", "down.png").replace("\\", "/")
 
         cb.setFixedSize(*geometry)
         cb.setStyleSheet(f"""
@@ -192,7 +194,7 @@ class Window(QMainWindow):
             border: 2px;
         }}
         QComboBox::down-arrow {{
-            image: url({ruta_imagen});
+            image: url({image_path});
             width: 16px;
             height: 16px;}}
             

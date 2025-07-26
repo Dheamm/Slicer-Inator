@@ -9,7 +9,7 @@
     "overlay": "off",
     "output_name": "Pepe",
     "format": ".avi",
-    "render_type": "Separated",
+    "render_type": "Compact",
     "fps": 60,
     "bitrate": 16000,
     "threads": 4
