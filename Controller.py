@@ -97,6 +97,7 @@ class Controller():
         self.render_thread.signal_status_logger.connect(self.render_window.update_status_logger) # Status logger of the progress bar.
         self.render_thread.signal_archive_count_message.connect(self.render_window.update_archive_count)
         self.render_thread.signal_status_message.connect(self.render_window.update_status_message)
+        self.render_thread.signal_name_message.connect(self.render_window.update_name_message)
         self.render_thread.signal_timer_start.connect(self.render_window.timer_start)
         self.render_thread.signal_timer_stop.connect(self.render_window.timer_stop)
         # self.render_thread.signal_status.connect(self.handle_render_error)

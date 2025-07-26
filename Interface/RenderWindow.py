@@ -27,7 +27,7 @@ class RenderWindow(Window):
         self._setup_ui()
 
     def _setup_ui(self):
-        super().window_settings((550, 450), 'SlicerInator - Render')
+        super().window_settings((550, 480), 'SlicerInator - Render')
         self.setWindowIcon(QIcon('Interface/Images/play.png'))
 
         # Layouts:
@@ -58,16 +58,20 @@ class RenderWindow(Window):
         secondary_layouts[1].addWidget(self.lbl_status_logger, 1, 0, alignment=Qt.AlignCenter)
         self.lbl_status_logger.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
 
+        self.lbl_name = super().label_settings((470, 50), 'Name: None', 'File Name', font_size=12)
+        secondary_layouts[2].addWidget(self.lbl_name, 0, 0, alignment=Qt.AlignLeft)
+        self.lbl_name.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
+
         self.lbl_time = super().label_settings((200, 50), 'Time : 00:00:00', 'Time Elapsed', font_size=12)
-        secondary_layouts[2].addWidget(self.lbl_time, 0, 0, alignment=Qt.AlignLeft)
+        secondary_layouts[2].addWidget(self.lbl_time, 1, 0, alignment=Qt.AlignLeft)
         self.lbl_time.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
 
         self.lbl_archive_count = super().label_settings((200, 50), 'Archives 0 / 0', 'Archive Count', font_size=12)
-        secondary_layouts[2].addWidget(self.lbl_archive_count, 0, 0, alignment=Qt.AlignRight)
+        secondary_layouts[2].addWidget(self.lbl_archive_count, 1, 0, alignment=Qt.AlignRight)
         self.lbl_archive_count.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
 
         self.lbl_status_message = super().label_settings((470, 50), 'Status: None', 'Status Message', font_size=12)
-        secondary_layouts[2].addWidget(self.lbl_status_message, 1, 0, alignment=Qt.AlignCenter)
+        secondary_layouts[2].addWidget(self.lbl_status_message, 2, 0, alignment=Qt.AlignCenter)
         self.lbl_status_message.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
 
         self.btn_start = super().button_settings((160, 50), 'Start', 'Press to start to render.', font_size=14)
@@ -157,3 +161,8 @@ class RenderWindow(Window):
         """Update the status message label."""
         self.lbl_status_message.setText(message)
         self.lbl_status_message.update()
+
+    def update_name_message(self, name: str):
+        """Update the name label with the given name."""
+        self.lbl_name.setText(f'Name: {name}')
+        self.lbl_name.update()
