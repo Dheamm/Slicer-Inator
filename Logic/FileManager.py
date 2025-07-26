@@ -163,7 +163,7 @@ class FileManager():
         '''Check if the directory exists.'''
         return (self.home_dir()/directory).exists()
 
-    def base_directory(self, directory:str='Videos'):
+    def base_directory(self, directory:str='Videos/Prueba'):
         '''Get the base or main directory.'''
         if not self.dir_exists(directory):
             return self.home_dir()

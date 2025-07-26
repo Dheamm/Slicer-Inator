@@ -1,75 +1,103 @@
 '''Module for the main window of the application. 
-This module is responsible to create the main window of the application and start the render thread.'''
+This module is responsible to create the main window of the application.'''
 
 # Libraries:
-from PyQt5.QtWidgets import QLabel # To create labels.
-from PyQt5.QtWidgets import QPushButton # To create buttons.
-from PyQt5.QtWidgets import QWidget # To create widgets.
+from PyQt5.QtCore import Qt # To set the alignment of the labels.
+from PyQt5.QtGui import QIcon # To set the icon.
+from PyQt5.QtCore import QSize # To set the size of the icon.
+from PyQt5.QtCore import pyqtSignal # To create signals.
 from PyQt5.QtWidgets import QFileDialog
 
 # Local Classes:
-from Logic.FileManager import FileManager # Import FileManager local class.
 from Interface.Window import Window # Import Window local class.
 
-class MainWindow(Window):
-    def __init__(self):
-        super().__init__()
-        self.file_manager = FileManager()
 
-    def set_controller(self, controller):
-        self.controller = controller
+class MainWindow(Window):
+
+    theme_applied_signal = pyqtSignal(str)
+    open_directory_signal = pyqtSignal(str)
+    change_directory_signal = pyqtSignal(str, str)
+
+    def __init__(self, data_json):
+        super().__init__(data_json)
+        self.__data_json = data_json
+        self._setup_ui()
+
+    def _setup_ui(self):
+        super().window_settings((550, 280), 'SlicerInator')
+
+        main_layout = super().main_layout_settings()
+        secondary_layouts = super().create_secondary_layout(main_layout, 3)
+        self.labels = []
+        self.buttons = []
+
+        lbl_title = super().label_settings((200, 60), 'SlicerInator', 'SlicerInator', font_size=20)
+        secondary_layouts[0].addWidget(lbl_title, 0, 0, alignment=Qt.AlignCenter)
+
+        btn_theme = super().button_settings((50, 50), '', 'Toggle the theme', font_size=0)
+        secondary_layouts[0].addWidget(btn_theme, 0, 0, alignment=Qt.AlignRight)
+        btn_theme.setIcon(QIcon('Interface/Images/theme.png'))
+        btn_theme.setIconSize(QSize(42, 42))
+        btn_theme.setCheckable(True)
+        btn_theme.clicked.connect(self.toggle_theme)
+
+        btn_close = super().button_settings((50, 50), '', 'Press to close the application.', font_size=0)
+        secondary_layouts[0].addWidget(btn_close, 0, 0, alignment=Qt.AlignLeft)
+        btn_close.setIcon(QIcon('Interface/Images/close.png'))
+        btn_close.setIconSize(QSize(42, 42))
+        btn_close.clicked.connect(lambda: self.close())
+
+        lbl_input = super().label_settings((380, 50), (r'Input │ C:\Users\Dheam\Downloads'), '', font_size=10)
+        secondary_layouts[1].addWidget(lbl_input, 0, 0, alignment=Qt.AlignCenter)
+
+        lbl_output = super().label_settings((380, 50), (r'Output │ C:\Users\Dheam\Downloads'), '', font_size=10)
+        secondary_layouts[1].addWidget(lbl_output, 1, 0, alignment=Qt.AlignCenter)
+
+        btn_input = super().button_settings((50, 50), '', 'Press to open the input path.', font_size=0)
+        secondary_layouts[1].addWidget(btn_input, 0, 0, alignment=Qt.AlignLeft)
+        btn_input.setIcon(QIcon('Interface/Images/folder.png'))
+        btn_input.setIconSize(QSize(52, 52))
+        btn_input.clicked.connect(lambda: self.open_directory_signal.emit('input_path'))
+
+        btn_output = super().button_settings((50, 50), '', 'Press to open the output path.', font_size=0)
+        secondary_layouts[1].addWidget(btn_output, 1, 0, alignment=Qt.AlignLeft)
+        btn_output.setIcon(QIcon('Interface/Images/folder.png'))
+        btn_output.setIconSize(QSize(52, 52))
+        btn_output.clicked.connect(lambda: self.open_directory_signal.emit('output_path'))
+
+        btn_search_input = super().button_settings((50, 50), '...', 'Press to select the input path.', font_size=14)
+        secondary_layouts[1].addWidget(btn_search_input, 0, 0, alignment=Qt.AlignRight)
+        btn_search_input.clicked.connect(lambda: self.change_directory('input_path'))
+
+        btn_search_output = super().button_settings((50, 50), '...', 'Press to select the output path.', font_size=14)
+        secondary_layouts[1].addWidget(btn_search_output, 1, 0, alignment=Qt.AlignRight)
+        btn_search_output.clicked.connect(lambda: self.change_directory('output_path'))
+
+        btn_slice = super().button_settings((160, 50), 'SLICE NOW', 'Press to open the Render Window.', font_size=14)
+        secondary_layouts[2].addWidget(btn_slice, 0, 0, alignment=Qt.AlignCenter)
+        btn_slice.clicked.connect(self.close)
+        btn_slice.clicked.connect(lambda: self.controller.get_render_window().open()) 
+
+        self.labels.extend([lbl_input, lbl_output, lbl_title])
+        self.buttons.extend([btn_theme, btn_close, btn_input, btn_output, btn_search_input, btn_search_output, btn_slice])
 
     def open(self):
-        super().window_parameters("Slicer Inator", 'lightgrey', 500, 250)
+        self.load_theme(self.__data_json.get('theme'))
+        self.show()
 
-        central_widget = QWidget(self)
-        self.setCentralWidget(central_widget)      
+    def toggle_theme(self):
+        if self.__data_json.get('theme') == 'dark':
+            self.__data_json['theme'] = 'light'
+        else:
+            self.__data_json['theme'] = 'dark'
 
-        # Title Label:
-        lbl_title = QLabel("Slicer Inator", self) # Create a label
-        lbl_title.setStyleSheet("font-weight: bold; font-size: 40px;") # Set the label style
-        lbl_title.setGeometry(130, 30, 300, 70)
+        self.theme_applied_signal.emit(self.__data_json['theme'])
 
-        # Path Label:
-        self.lbl_path = QLabel(f"Ruta: {self.file_manager.get_input_path()}", self)
-        self.lbl_path.setStyleSheet("font-weight: bold; font-size: 15px;")
-        self.lbl_path.setGeometry(100, 200, 400, 70)
-
-        # Change Path Button:
-        btn_change_path = super().button_config((0, 0, 100, 30), "Change Path", "lightblue", "Arial", 8, tooltip_text="Change the path of the clips")
-        btn_change_path.clicked.connect(self.change_path)
-
-        # Open Path Button:
-        btn_open_input_path = super().button_config((100, 0, 100, 30), "Input Path", "lightblue", "Arial", 8, tooltip_text="Open the input path")
-        btn_open_input_path.clicked.connect(lambda: self.file_manager.open_directory(self.file_manager.get_input_path()))
-
-        # Open Output Path Button:
-        btn_open_output_path = super().button_config((200, 0, 100, 30), "Output Path", "lightblue", "Arial", 8, tooltip_text="Open the output path")
-        btn_open_output_path.clicked.connect(self.open_output_path)
-
-        # Slice Button:
-        btn_slice = super().button_config((155, 100, 200, 50), "Slice", "lightblue", "Arial", 16, tooltip_text="Go to the render window")
-        btn_slice.clicked.connect(self.close) # Hide last window.
-        btn_slice.clicked.connect(lambda: self.controller.get_render_window().open()) # Start the new window.
-        # btn_slice.clicked.connect(self.start_render_thread)
-
-        # Exit Button:
-        btn_exit = super().button_config((230, 160, 50, 30), "Exit", "lightcoral", "Arial", 12, tooltip_text="Exit the application")
-        btn_exit.clicked.connect(self.close)
-
-        self.show() # Show the window
-
-    def change_path(self):
-        '''Change the path of the clips.'''
-        new_path = QFileDialog.getExistingDirectory(self, 'Select the directory of the clips', self.file_manager.get_input_path())
+    def change_directory(self, directory_type:str):
+        new_path = QFileDialog.getExistingDirectory(self, 'Select the directory of the clips', 
+                                                    self.__data_json.get(directory_type))
+        print(f"New path selected for {directory_type}: {new_path}")
+        
         if new_path:
-            self.file_manager.set_input_path(new_path)
-            self.lbl_path.setText(f"Path: {self.file_manager.get_input_path()}")
-            print(f"New path: {self.file_manager.get_input_path()}")
-
-    def open_output_path(self):
-        '''Open the output path.'''
-        try:
-            self.file_manager.open_directory(self.file_manager.get_output_path())
-        except ValueError as e:
-            super().show_message("Error", f"{e}")
+            self.__data_json[directory_type] = new_path
+            self.change_directory_signal.emit(directory_type, new_path)

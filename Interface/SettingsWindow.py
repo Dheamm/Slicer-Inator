@@ -1,101 +1,238 @@
-# Libraries:
-from PyQt5.QtWidgets import QLabel # To create labels.
-from PyQt5.QtWidgets import QPushButton # To create buttons.
-from PyQt5.QtWidgets import QWidget # To create widgets.
-from PyQt5.QtWidgets import QFileDialog
-from PyQt5.QtGui import QIntValidator # To validate the input.
-from PyQt5.QtWidgets import QLineEdit # To create inputs.
+'''Module for the main window of the application. 
+This module is responsible to create the render window of the application and start the render thread.'''
 
+# Libraries:
+from PyQt5.QtCore import Qt # To set the alignment of the labels.
+from PyQt5.QtGui import QIcon # To set the icon.
+from PyQt5.QtCore import QSize # To set the size of the icon.
+
+
+from PyQt5.QtWidgets import QLineEdit, QComboBox # To create input fields and combo boxes.
+from PyQt5.QtCore import pyqtSignal
 
 # Local Classes:
-from Logic.FileManager import FileManager # Import FileManager local class.
-from Logic.Slicer import Slicer # Import Slicer local class.
-from Interface.SettingsController import SettingsController # Import SettingsController local class.
-from Interface.Window import Window # Import Window local class.
+from Interface.Window import Window # Import Window local class
 
 class SettingsWindow(Window):
-    def __init__(self):
-        super().__init__()
-        self.file_manager = FileManager()
-        self.slicer = Slicer()
-        self.settings_controller = SettingsController()
+    
+    settings_applied = pyqtSignal(object)
 
-    def set_controller(self, controller):
-        self.controller = controller
+    def __init__(self, data_json):
+        super().__init__(data_json)
+        self.__data_json = data_json
+        self.config_map = {
+            key: {"value": val} for key, val in self.__data_json.items()
+            }
+        self._setup_ui()
+
+    def _setup_ui(self):
+        super().window_settings((400, 800), 'SlicerInator - Settings')
+        self.setWindowIcon(QIcon('Interface/Images/settings.png'))
+        
+        # Layouts:
+        main_layout = super().main_layout_settings()
+        secondary_layouts = super().create_secondary_layout(main_layout, 5)
+
+        btn_close = super().button_settings((50, 50), '', 'Press to close the settings window.', font_size=0)
+        secondary_layouts[0].addWidget(btn_close, 0, 0, alignment=Qt.AlignLeft)
+        btn_close.setIcon(QIcon('Interface/Images/close.png'))
+        btn_close.setIconSize(QSize(42, 42))
+        btn_close.clicked.connect(lambda: self.close())
+        btn_close.clicked.connect(lambda: self.controller.get_render_window().setEnabled(True))
+
+        lbl_title = super().label_settings((200, 60), 'Settings', 'SlicerInator - Settings', font_size=20)
+        secondary_layouts[0].addWidget(lbl_title, 0,  0, alignment=Qt.AlignCenter)
+
+        txt_list = []
+        cb_list = []
+
+        # Proccess Settings:
+
+        lbl_duration = super().label_settings((150, 50), 'Duration/clip:', 'Duration', font_size=10)
+        secondary_layouts[1].addWidget(lbl_duration, 1, 0, alignment=Qt.AlignRight)
+        lbl_duration.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
+
+        txt_duration = super().input_settings((150, 50), 'int', placeholder=f'{self.__data_json.get("duration")}s', tooltip='Set the duration of each clip in seconds.')
+        secondary_layouts[1].addWidget(txt_duration, 1, 1, alignment=Qt.AlignLeft)
+
+
+        lbl_clip_limit = super().label_settings((150, 50), 'Clips limit:', 'Clips Limit', font_size=10)
+        secondary_layouts[1].addWidget(lbl_clip_limit, 2, 0, alignment=Qt.AlignRight)
+        lbl_clip_limit.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
+
+        txt_clip_limit = super().input_settings((150, 50), 'int', placeholder=f'{self.__data_json.get("clip_limit")}', tooltip='Set the limit of clips to render.')
+        secondary_layouts[1].addWidget(txt_clip_limit, 2, 1, alignment=Qt.AlignLeft)
+
+        lbl_transitions = super().label_settings((150, 50), 'Transitions:', 'Transitions', font_size=10)
+        secondary_layouts[1].addWidget(lbl_transitions, 3, 0, alignment=Qt.AlignRight)
+        lbl_transitions.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
+
+        txt_transitions = super().input_settings((150, 50), 'int', placeholder=f'{self.__data_json.get("transitions")}s', tooltip='Set the time of transitions to apply.')
+        secondary_layouts[1].addWidget(txt_transitions, 3, 1, alignment=Qt.AlignLeft)
+
+        lbl_overlay = super().label_settings((150, 50), 'Overlay:', 'Overlay', font_size=10)
+        secondary_layouts[1].addWidget(lbl_overlay, 4, 0, alignment=Qt.AlignRight)
+        lbl_overlay.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
+    
+        def CurrentIndexChanged(widget, attribute, item_list):
+            for i, item in enumerate(item_list):
+                if item == attribute:
+                    widget.setCurrentIndex(i)
+                    break
+
+        overlay_items = ['off','up-Left', 'Left', 'down-Left', 'up', 'center', 'down', 'up-right', 'right', 'down-right']    
+        cb_overlay = super().combobox_settings((150, 50), 'Select position of overlay.', overlay_items)
+        CurrentIndexChanged(cb_overlay, self.__data_json.get("overlay"), overlay_items)
+        secondary_layouts[1].addWidget(cb_overlay, 4, 1, alignment=Qt.AlignLeft)
+
+        # Output Settings:
+
+        lbl_output_name = super().label_settings((150, 50), 'Output name:', 'Output Name', font_size=10)
+        secondary_layouts[2].addWidget(lbl_output_name, 1, 0, alignment=Qt.AlignRight)
+        lbl_output_name.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
+
+        txt_output_name = super().input_settings((150, 50), 'str', placeholder=f'{self.__data_json.get("output_name")}', tooltip='Set the name of the output file.')
+        secondary_layouts[2].addWidget(txt_output_name, 1, 1, alignment=Qt.AlignLeft)
+
+        lbl_format = super().label_settings((150, 50), 'Format:', 'Format', font_size=10)
+        secondary_layouts[2].addWidget(lbl_format, 2, 0, alignment=Qt.AlignRight)
+        lbl_format.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
+
+        format_items = ['.mp4', '.avi', '.mov', '.mkv', '.flv']
+        cb_format = super().combobox_settings((150, 50), 'Select the video format.', format_items)
+        CurrentIndexChanged(cb_format, self.__data_json.get("format"), format_items)
+        secondary_layouts[2].addWidget(cb_format, 2, 1, alignment=Qt.AlignLeft)
+
+
+
+        lbl_render_type = super().label_settings((150, 50), 'Render type:', 'Render Type', font_size=10)
+        secondary_layouts[2].addWidget(lbl_render_type, 3, 0, alignment=Qt.AlignRight)
+        lbl_render_type.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
+
+        render_type_items = ['Compact', 'Separated']
+        cb_render_type = super().combobox_settings((150, 50), 'Select the render type.', render_type_items)
+        CurrentIndexChanged(cb_render_type, self.__data_json.get("render_type"), render_type_items)
+        cb_render_type.setToolTip('Select the render type.' \
+        '\nCompact: Render all clips in one video file.' \
+        '\nSeparated: Render each clip in a separate video file.')
+        cb_render_type.setItemData(0, 'Compact: Render all clips in one video file.', Qt.ToolTipRole)
+        cb_render_type.setItemData(1, 'Separated: Render each clip in a separate video file.', Qt.ToolTipRole)
+        secondary_layouts[2].addWidget(cb_render_type, 3, 1, alignment=Qt.AlignLeft)
+        #tooltip en los items del combobox
+
+
+        # Video Settings:
+
+        lbl_fps = super().label_settings((150, 50), 'FPS:', 'FPS', font_size=10)
+        secondary_layouts[3].addWidget(lbl_fps, 1, 0, alignment=Qt.AlignRight)
+        lbl_fps.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
+
+        txt_fps = super().input_settings((150, 50), 'int', placeholder=f'{self.__data_json.get("fps")}', tooltip='Set the frames per second of the video.')
+        secondary_layouts[3].addWidget(txt_fps, 1, 1, alignment=Qt.AlignLeft)
+
+        lbl_bitrate = super().label_settings((150, 50), 'Bitrate:', 'Bitrate', font_size=10)
+        secondary_layouts[3].addWidget(lbl_bitrate, 2, 0, alignment=Qt.AlignRight)
+        lbl_bitrate.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
+
+        txt_bitrate = super().input_settings((150, 50), 'int', placeholder=f'{self.__data_json.get("bitrate")}', tooltip='Set the bitrate of the video in kbps.')
+        secondary_layouts[3].addWidget(txt_bitrate, 2, 1, alignment=Qt.AlignLeft)
+
+        lbl_threads = super().label_settings((150, 50), 'Threads:', 'CPU-Threads', font_size=10)
+        secondary_layouts[3].addWidget(lbl_threads, 3, 0, alignment=Qt.AlignRight)
+        lbl_threads.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
+
+        txt_threads = super().input_settings((150, 50), 'int', placeholder=f'{self.__data_json.get("threads")}', tooltip='Set the number of CPU threads to use for rendering.')
+        secondary_layouts[3].addWidget(txt_threads, 3, 1, alignment=Qt.AlignLeft)
+
+        txt_list.extend([txt_duration, txt_clip_limit, txt_transitions, txt_output_name, txt_fps, txt_bitrate, txt_threads])
+        cb_list.extend([cb_overlay, cb_format, cb_render_type])                
+
+        self.btn_apply = super().button_settings((150, 50), 'Apply', 'Press to apply the settings.', font_size=14)
+        self.btn_apply.clicked.connect(lambda: self.apply_settings())
+        secondary_layouts[4].addWidget(self.btn_apply, 0, 0, alignment=Qt.AlignCenter)
+
+        assignments = [
+            ("duration", txt_duration, "lineedit"),
+            ("clip_limit", txt_clip_limit, "lineedit"),
+            ("transitions", txt_transitions, "lineedit"),
+            ("overlay", cb_overlay, "combobox"),
+            ("output_name", txt_output_name, "lineedit"),
+            ("format", cb_format, "combobox"),
+            ("render_type", cb_render_type, "combobox"),
+            ("fps", txt_fps, "lineedit"),
+            ("bitrate", txt_bitrate, "lineedit"),
+            ("threads", txt_threads, "lineedit")
+        ]
+
+        for key, widget, wtype in assignments:
+            self.config_map[key]["widget"] = widget
+            self.config_map[key]["type"] = wtype
+
+        for key, info in self.config_map.items():
+            if "widget" not in info or "type" not in info:
+                continue
+            widget = info["widget"]
+            wtype = info["type"]
+            if wtype == "lineedit":
+                widget.textChanged.connect(self.check_changes)
+            elif wtype == "combobox":
+                widget.currentIndexChanged.connect(self.check_changes)
 
     def open(self):
-        super().window_parameters("Settings", 'lightgrey', 600, 500)
-        lbl_style = "font-weight: bold; font-size: 20px;"
-
-        central_widget = QWidget(self)
-        self.setCentralWidget(central_widget)
-
-        # BACK:
-        btn_back = self.button_config((520, 460, 60, 35), '↩️', 'lightblue', 'Arial', 20, tooltip_text='Back to the render window')
-        btn_back.clicked.connect(self.close)
-        btn_back.clicked.connect(lambda: self.controller.get_render_window().setDisabled(False))
-
-        # DURATION:
-        lbl_duration = super().label_config((10, 0, 100, 70), 'Duration:', tooltip='Set the duration', style=lbl_style)
-        self.txt_duration = super().input_config((160, 20, 50, 30), 'int', 
-        placeholder=str(self.slicer.get_duration()), 
-        tooltip=f'Duration: {(self.slicer.get_duration())}')
-
-        self.btn_set_duration = self.button_config((220, 20, 50, 30), 'Set', 'lightblue', 'Arial', 10, tooltip_text='Set the duration')
-        self.btn_set_duration.setEnabled(False)
-        self.btn_set_duration.clicked.connect(lambda: self.slicer.set_duration(int(self.txt_duration.text())))
-        self.btn_set_duration.clicked.connect(lambda: self.show_message('Duration', 'Duration set successfully!'))
-        self.btn_set_duration.clicked.connect(lambda: self.txt_duration.setPlaceholderText(str(self.slicer.get_duration())))
-        self.btn_set_duration.clicked.connect(lambda: self.txt_duration.setToolTip(f'Duration: {self.slicer.get_duration()}'))
-        self.txt_duration.textChanged.connect(lambda text: self.btn_set_duration.setEnabled(bool(text)))
-
-        # CLIP LIMIT:
-        lbl_clips_limit = super().label_config((300, 0, 120, 70), 'Clips limit:', tooltip='Set the clips limit', style=lbl_style)
-        self.txt_clips_limit = super().input_config((420, 20, 50, 30), 'int',
-        placeholder=str(self.settings_controller.get_clips_limit()),
-        tooltip=f'Clips limit: {self.settings_controller.get_clips_limit()}')
-
-        self.btn_set_clips_limit = self.button_config((480, 20, 50, 30), 'Set', 'lightblue', 'Arial', 10, tooltip_text='Set the clips limit')
-        self.btn_set_clips_limit.setEnabled(False)
-        self.btn_set_clips_limit.clicked.connect(lambda: self.settings_controller.set_clips_limit(int(self.txt_clips_limit.text())))
-        self.btn_set_clips_limit.clicked.connect(lambda: self.show_message('Clips limit', 'Clips limit set successfully!'))
-        self.btn_set_clips_limit.clicked.connect(lambda: self.txt_clips_limit.setPlaceholderText(str(self.settings_controller.get_clips_limit())))
-        self.btn_set_clips_limit.clicked.connect(lambda: self.txt_clips_limit.setToolTip(f'Clips limit: {self.settings_controller.get_clips_limit()}'))
-        self.txt_clips_limit.textChanged.connect(lambda text: self.btn_set_clips_limit.setEnabled(bool(text)))
-        
-
-        # VIDEO TEXT POSITION:
-        lbl_position = QLabel('Text position:', self)
-        lbl_position.setStyleSheet("font-weight: bold; font-size: 20px;")
-        lbl_position.setGeometry(10, 50, 140, 70)
-
-        self.cb_text_position = super().combobox_config((160, 70, 120, 30), 'Set the position of video text', 
-        items = ["left-bottom", "left-center", "left-top", "center-bottom", "center-center", "center-top", "right-bottom", "right-center", "right-top", 'none'])
-        self.cb_text_position.currentTextChanged.connect(self.on_combobox_changed)
-
-        # TRANSITIONS:
-        lbl_transitions = super().label_config((10, 100, 180, 70), 'Transitions:', tooltip='Show transitions', style=lbl_style)
-        self.chk_transitions = super().checkbox_config((200, 120, 30, 30), tooltip='Show transitions')
-        self.chk_transitions.setChecked(self.settings_controller.get_show_transition())
-        self.chk_transitions.stateChanged.connect(lambda: self.settings_controller.set_show_transition(self.chk_transitions.isChecked()))
-
-        # SHOW VIDEO TEXT:
-        lbl_show_overlay = super().label_config((10, 150, 180, 70), 'Overlay:', tooltip='Show overlay', style=lbl_style)
-        self.chk_show_overlay = super().checkbox_config((200, 170, 40, 40), tooltip='Show overlay')
-        self.chk_show_overlay.setChecked(self.settings_controller.get_show_overlay())
-        self.chk_show_overlay.stateChanged.connect(lambda: self.settings_controller.set_show_overlay(self.chk_show_overlay.isChecked()))
-
-        # PER-CLIP:
-        lbl_render_per_clip = super().label_config((10, 200, 180, 70), 'Per-clip:', tooltip='Render per-clip', style=lbl_style)
-        self.chk_render_per_clip = super().checkbox_config((200, 220, 40, 40), tooltip='Render per-clip')
-        self.chk_render_per_clip.setChecked(self.settings_controller.get_render_per_clip())
-        self.chk_render_per_clip.stateChanged.connect(lambda: self.settings_controller.set_render_per_clip(self.chk_render_per_clip.isChecked()))
-
+        self.load_theme(self.__data_json.get('theme'))
+        self.enable_apply_button(False)
         self.show()
 
-    def on_combobox_changed(self):
-        '''Method to execute when the combobox is changed.'''
-        selected_text = self.cb_text_position.currentText()
-        self.slicer.set_text_position(selected_text)
-        print(f'current = {self.cb_text_position.currentText()}')
-        print(f'get = {self.slicer.get_text_position()}')
+    def enable_apply_button(self, state):
+        self.btn_apply.setEnabled(state)
+
+    def check_changes(self):
+        changes = {}
+
+        # {
+        # "duration": {"value": 45, "widget": txt_duration, "type": "lineedit"},
+        # "overlay": {"value": "off", "widget": cb_overlay, "type": "combobox"},
+        # "fps": {"value": 60, "widget": txt_fps, "type": "lineedit"}
+        # }
+
+        for key, info_dict in self.config_map.items():
+            if "widget" not in info_dict or "type" not in info_dict:
+                continue  # salta esta iteración si no tiene widget o tipo
+            widget = info_dict["widget"]
+            original_value = str(info_dict["value"])
+
+            # Detectar tipo y obtener valor actual según tipo
+            if info_dict["type"] == "lineedit":
+                current = widget.text().strip()
+            elif info_dict["type"] == "combobox":
+                current = widget.currentText()
+            else:
+                # Si agregas más tipos, aquí agregas más casos
+                continue
+
+            # Compara y guarda solo si cambió y no está vacío
+            if current != "" and current != original_value:
+                changes[key] = current
+
+        self.enable_apply_button(bool(changes)) # if dict is not empty
+        self.pending_changes = changes  # Guardas para usar cuando apliques
+
+    def apply_settings(self):
+        if not self.pending_changes:
+            return  # Nada que aplicar
+
+        # 1. Actualiza el diccionario original
+        for key, new_value in self.pending_changes.items():
+            self.__data_json[key] = new_value
+            self.config_map[key]["value"] = new_value  # Refresca el valor original en el mapa
+
+        # 2. Emitir señal con cambios si se usa señal
+        self.settings_applied.emit(self.pending_changes)  # Suponiendo que tienes esta señal
+
+        # 3. Limpiar cambios pendientes
+        self.pending_changes = {}
+
+        # 4. Desactivar botón
+        self.enable_apply_button(False)
+        # self.close()
+        # self.controller.get_render_window().setEnabled(True)

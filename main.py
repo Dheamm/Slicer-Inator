@@ -12,19 +12,19 @@ from sys import exit # To close the application.
 from PyQt5.QtWidgets import QApplication # To create the interface application.
 
 # Local Classes:
-from Interface.WindowsController import WindowsController # Import WindowsController local class.
+from Controller import Controller # Import Controller local class.
 
 
 def start_application():
     # Interface:
     app = QApplication([]) # Create the application to show the interface.
-    interface = WindowsController() # Instance of MainWindow
 
-    interface.get_main_window().open() # Show the window with a parameter of RenderWindow.
+    Controller().get_main_window().open() # Show the window with a parameter of RenderWindow.
     exit(app.exec_()) # Execute the event loop.
 
 if __name__ == '__main__':
     start_application()
+
 
 #Completed tasks:
 # Todo: Manejar videos corrompidos y saltarselos. ✔️
@@ -41,14 +41,20 @@ if __name__ == '__main__':
 # Todo: Si el usario ejecuta el programa, que deba seleccionar una input path. ## Se selecciona por defecto. ✔️
 
 ## Pending tasks: ##
-#Refaactor:
+#Refactor:
 # Todo: Tener una clase controlador (Al estilo MVC (Model-View-Controller)) que maneje los atributos de settings y centralizarlo ahí, tener las rutas y otras cosas y que esta sea singelton.
 
 #Interface:
+# TodoL Que la interfaz sea responsive.
 # Todo: Hacer un modo oscuro
 # Todo: Que la barra sea mas precisa (y real).
 # Todo: Embellecer la interfaz grafica.
 # Todo: Agregar una ventana emergente o simplemente un avis cuando haya un error.
+# Todo: Hacer que se escale por si sola la app.
+# Todo: Poder agregar temas con archivos QSS.
+# Todo: Que el usuario pueda guardar un tema default, incluso si cierra el programa, se puede hacer cambiando el nombre del archivo o agregando metadatos al .qss
+# Todo: Revisar si la fuente se aplica bien a todos los widgets.
+# Todo: Audio on off opciones
 
 #Errors:
 # Todo: El boton de set de clip limit si no agregas nada se crashea, hay que bloquearlo.
@@ -59,6 +65,7 @@ if __name__ == '__main__':
 # Todo: Cuando cierras la ventana de settings la de render queda bloqueada.
 
 # Funionalities:
+# Todo ¡¡Agregar el toggledelete nuevamente!!, que borre el archivo original si se corta correctamente.
 # Todo: Poder hacer la ventana mas grande o pequeña pero con botones para tener presets.
 # Todo: Cambiar la estetica de la barra de progreso.
 # Todo: Que render window te muestre si está cortando o renderizando y que la barra cambie de color segun esto.

@@ -1,177 +1,114 @@
-'''Module responsible to show the render window.'''
+'''Module for the main window of the application. 
+This module is responsible to create the render window of the application and start the render thread.'''
 
 # Libraries:
-from PyQt5.QtWidgets import QLabel # To create labels.
-from PyQt5.QtWidgets import QProgressBar # To create progress bars.
-from PyQt5.QtCore import QThread # To create threads.
+from PyQt5.QtCore import Qt # To set the alignment of the labels.
+from PyQt5.QtGui import QIcon # To set the icon.
+from PyQt5.QtCore import QSize # To set the size of the icon.
+from PyQt5.QtCore import pyqtSignal # To create signals.
 
 # Local Classes:
-from Logic.FileManager import FileManager # Import FileManager local class.
-from Logic.Slicer import Slicer # Import Slicer local class.
-from Interface.SettingsController import SettingsController # Import SettingsController local class.
-from Interface.Window import Window # Import Window local class.
-from Threads.RenderThread import RenderThread # Import RenderThread local class.
-from Logic.BarLogger import BarLogger # Import BarLogger local class.
+from Interface.Window import Window # Import Window local class
 
 class RenderWindow(Window):
-    def __init__(self):
-        super().__init__()
-        self.file_manager = FileManager()
-        self.slicer = Slicer()
-        self.settings_controller = SettingsController()
-        self.render_thread = None
-        self.progress_thread = None
 
-    def set_controller(self, controller):
-        self.controller = controller
+    start_rendering_signal = pyqtSignal(bool)
+    stop_rendering_signal = pyqtSignal(bool)
 
-    def open(self):
-        super().window_parameters('Render', 'lightgrey', 500, 250)
+    def __init__(self, data_json):
+        super().__init__(data_json)
+        self.__data_json = data_json
+        self._setup_ui()
 
-        # Title Label:
-        # lbl_title = QLabel('Render', self)
-        # lbl_title.setStyleSheet("font-weight: bold; font-size: 18px;")
-        # lbl_title.setGeometry(200, 20, 100, 70)
+    def _setup_ui(self):
+        super().window_settings((550, 450), 'SlicerInator - Render')
+        self.setWindowIcon(QIcon('Interface/Images/play.png'))
 
-        # Progress Bar:
-        self.pb_progress = QProgressBar(self)
-        self.pb_progress.setGeometry(100, 20, 300, 50)
-        self.pb_progress.setRange(0, 100)
-        # self.pb_progress.setStyleSheet("border: 2px solid black; border-radius: 5px; background-color: #E0E0E0;")
-        self.pb_progress.setStyleSheet("""
-            QProgressBar {
-                border: 2px solid black;
-                border-radius: 5px;
-                background-color: #E0E0E0;
-                text-align: center;
-                font-weight: bold;
-                font-size: 16px;
-            }
-            QProgressBar::chunk {
-                background-color: #2196F3;
-            }
-        """)
+        # Layouts:
+        main_layout = super().main_layout_settings()
+        secondary_layouts = super().create_secondary_layout(main_layout, 4)
 
-        self.lbl_status_logger = super().label_config((402, 60, 100, 10), '0 / 0', tooltip='Status', style='font-weight: bold; font-size: 10px;')
-        self.lbl_status_logger.hide()
+        self.btn_back = super().button_settings((50, 50), '', 'Press to go back to the main window.', font_size=0)
+        secondary_layouts[0].addWidget(self.btn_back, 0, 0, alignment=Qt.AlignCenter)
+        self.btn_back.setIcon(QIcon('Interface/Images/back.png'))
+        self.btn_back.setIconSize(QSize(42, 42))
+        self.btn_back.clicked.connect(lambda: self.close())
+        self.btn_back.clicked.connect(lambda: self.controller.get_main_window().open())
 
-        # Buttons:
-        self.btn_start = self.button_config((105, 75, 35, 35), '▶', '#90CFA0', 'Arial', 30, tooltip_text='Start', style='border-radius: 17.5px; border: 2px solid #388E3C;')
-        self.btn_start.clicked.connect(self.start_rendering)
+        lbl_title = super().label_settings((350, 65), 'SlicerInator - Render', 'SlicerInator - Render', font_size=20)
+        secondary_layouts[0].addWidget(lbl_title, 0,  1, alignment=Qt.AlignCenter)
 
-        btn_stop = self.button_config((145, 75, 35, 35), '⬛', 'lightcoral', 'Arial', 15, tooltip_text='Stop', style='padding-top: 0px; padding-bottom: 2px; padding-left: 0.4px;')
-        btn_stop.clicked.connect(self.stop_rendering)
-
-        btn_back = self.button_config((430, 205, 60, 35), '↩️', '#ADD8E6', 'Arial', 20, tooltip_text='Back to the main window')
-        btn_back.clicked.connect(self.close)
-        btn_back.clicked.connect(self.stop_rendering)
-        btn_back.clicked.connect(lambda: self.controller.get_main_window().open())
-
-        self.btn_settings = self.button_config((430, 165, 60, 35), '⚙️', 'lightblue', 'Arial', 14, tooltip_text='Settings', style='padding-top: 0px; padding-bottom: 4px;')
-        self.btn_settings.clicked.connect(lambda: self.setDisabled(True))
+        self.btn_settings = super().button_settings((50, 50), '', 'Open the settings window.', font_size=0)
+        secondary_layouts[0].addWidget(self.btn_settings, 0, 2, alignment=Qt.AlignCenter)
+        self.btn_settings.setIcon(QIcon('Interface/Images/settings.png'))
+        self.btn_settings.setIconSize(QSize(42, 42))
+        self.btn_settings.clicked.connect(lambda: self.setEnabled(False))
         self.btn_settings.clicked.connect(lambda: self.controller.get_settings_window().open())
 
-        self.btn_toggle_delete = self.button_config((265, 75, 130, 35), 'Delete: OFF', 'lightcoral', 'Arial', 12, tooltip_text='Delete original video')
-        self.btn_toggle_delete.setCheckable(True)
-        self.btn_toggle_delete.clicked.connect(self.change_toggle_delete)
+        self.progress_bar = super().progress_bar_settings((400, 60), 'Render Progress')
+        secondary_layouts[1].addWidget(self.progress_bar, 0,  0, alignment=Qt.AlignCenter)
 
-        self.lbl_processed = QLabel(f'{0}/{0} clips processed.', self)
-        self.lbl_processed.setStyleSheet("font-size: 20px;")
-        self.lbl_processed.setGeometry(50, 120, 200, 30)
-        self.lbl_processed.hide()
+        self.lbl_status_logger = super().label_settings((200, 50), '0 / 0', 'Status Logger', font_size=12)
+        secondary_layouts[1].addWidget(self.lbl_status_logger, 1, 0, alignment=Qt.AlignCenter)
+        self.lbl_status_logger.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
 
-        self.lbl_name = QLabel(f'Name: {None}', self)
-        self.lbl_name.setStyleSheet("font-size: 20px;")
-        self.lbl_name.setGeometry(50, 150, 350, 30)
-        self.lbl_name.hide()
+        lbl_time = super().label_settings((200, 50), 'Time : 01:15', 'Time Elapsed', font_size=12)
+        secondary_layouts[2].addWidget(lbl_time, 0, 0, alignment=Qt.AlignLeft)
+        lbl_time.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
 
-        self.lbl_status = QLabel(f'The clip {0} has been rendered!', self)
-        self.lbl_status.setStyleSheet("font-size: 20px;")
-        self.lbl_status.setGeometry(50, 180, 350, 30)
-        self.lbl_status.hide()
+        lbl_archive_count = super().label_settings((200, 50), 'Archives 5 / 10', 'Archive Count', font_size=12)
+        secondary_layouts[2].addWidget(lbl_archive_count, 0, 0, alignment=Qt.AlignRight)
+        lbl_archive_count.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
 
-        self.lbl_time = QLabel(f'Time: {0} seconds.', self)
-        self.lbl_time.setStyleSheet("font-size: 20px;")
-        self.lbl_time.setGeometry(50, 210, 200, 30)
-        self.lbl_time.hide()
+        lbl_status_message = super().label_settings((470, 50), 'Status: Rendering...', 'Status Message', font_size=12)
+        secondary_layouts[2].addWidget(lbl_status_message, 1, 0, alignment=Qt.AlignCenter)
+        lbl_status_message.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
+        
 
+        self.btn_start = super().button_settings((160, 50), 'Start', 'Press to start to render.', font_size=14)
+        secondary_layouts[3].addWidget(self.btn_start, 0, 0, alignment=Qt.AlignCenter)
+        self.btn_start.setIcon(QIcon('Interface/Images/play.png'))
+        self.btn_start.setIconSize(QSize(42, 42))
+        self.btn_start.clicked.connect(self.start_pressed)
+
+
+        self.btn_stop = super().button_settings((160, 50), 'Stop', 'Press to stop the render.', font_size=14)
+        secondary_layouts[3].addWidget(self.btn_stop, 0, 1, alignment=Qt.AlignCenter)
+        self.btn_stop.setIcon(QIcon('Interface/Images/stop.png'))
+        self.btn_stop.setIconSize(QSize(42, 42))
+        self.btn_stop.setEnabled(False)
+        self.btn_stop.clicked.connect(self.stop_pressed)
+
+
+    def open(self):
+        self.load_theme(self.__data_json.get('theme'))
         self.show()
 
-    def change_toggle_delete(self):
-        if self.btn_toggle_delete.isChecked():
-            self.btn_toggle_delete.setText('Delete: ON')
-        else:
-            self.btn_toggle_delete.setText('Delete: OFF')
-
-    def start_rendering(self):
-        self.btn_toggle_delete.setEnabled(False)
+    def start_pressed(self):
         self.btn_start.setEnabled(False)
         self.btn_settings.setEnabled(False)
-        self.lbl_status_logger.show()
+        self.btn_back.setEnabled(False)
+        self.btn_stop.setEnabled(True)
 
-        # Instances of the threads
-        self.render_thread = RenderThread(self.file_manager, self.slicer, self.settings_controller, self.btn_toggle_delete, self.btn_start)
+        self.progress_bar.setTextVisible(True)
 
-        # Connect the signals
-        self.render_thread.signal_progress_logger.connect(self.update_progress) # Percentage of the progress bar.
-        self.render_thread.signal_status_logger.connect(self.update_status_logger) # Status logger of the progress bar.
-        self.render_thread.signal_status.connect(self.handle_render_error)
-        self.render_thread.signal_processed.connect(self.update_info)
-        
-        # Start the threads
-        self.render_thread.start()
+        self.start_rendering_signal.emit(True)
 
-    def handle_render_error(self):
-        print("Error! Stopping ProgressThread.")
-        self.stop_rendering()
-
-    def stop_rendering(self):
-        if self.render_thread is not None:
-            self.render_thread.terminate()
-
-        self.btn_toggle_delete.setEnabled(True)
+    def stop_pressed(self):
         self.btn_start.setEnabled(True)
         self.btn_settings.setEnabled(True)
-        self.lbl_processed.hide()
-        self.lbl_name.hide()
-        self.lbl_status.hide()
-        self.lbl_time.hide()
-        self.lbl_status_logger.hide()
+        self.btn_back.setEnabled(True)
 
-        self.update_progress(-1)
+        self.progress_bar.setTextVisible(False)
+        self.update_progress_bar(0)
 
-        self.file_manager.close_ffmpeg_process()
-        QThread.msleep(100) # Wait for the process to close.
-        self.file_manager.delete_temp_files()
 
-    def update_progress(self, value):
-        self.pb_progress.setValue(value)
-        self.pb_progress.update()
+        self.stop_rendering_signal.emit(True)
+
+    def update_progress_bar(self, value: int):
+        """Update the progress bar with the given value."""
+        self.progress_bar.setValue(value)
+        self.progress_bar.update()
 
     def update_status_logger(self, curren_value, total_value):
         self.lbl_status_logger.setText(f'{curren_value} / {total_value}')
-
-    def update_info(self, info_type, text):
-        '''Update the information of the render window.'''
-        if info_type == 'processed':
-            self.lbl_processed.setText(text)
-            self.lbl_processed.show()
-
-        elif info_type == 'name':
-            self.lbl_name.setText(text)
-            self.lbl_name.setToolTip(text)
-            self.lbl_name.show()
-
-        elif info_type == 'status':
-            self.lbl_status.setText(text)
-            self.lbl_status.setToolTip(text)
-            self.lbl_status.show()
-
-        elif info_type == 'time':
-            self.lbl_time.setText(text)
-            self.lbl_time.show()
-
-        elif info_type == 'hide':
-            self.lbl_name.hide()
-            self.lbl_status.hide()
-            self.lbl_time.hide()

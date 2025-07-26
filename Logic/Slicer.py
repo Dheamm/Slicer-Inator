@@ -19,11 +19,11 @@ class Slicer():
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self, 
-                logger = None,
+    def __init__(self,
                 duration:int = 45, 
+                transition_duration:float = 0.5,
                 text_position:tuple = ("left", "bottom"),
-                transition_duration:float = 0.5):
+                logger = None):
         self.__logger = logger
         self.__duration = duration
         self.__text_position = text_position
