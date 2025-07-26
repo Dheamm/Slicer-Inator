@@ -95,7 +95,10 @@ class Controller():
     def handle_start_rendering(self):
         self.render_thread.signal_progress_logger.connect(self.render_window.update_progress_bar) # Percentage of the progress bar.
         self.render_thread.signal_status_logger.connect(self.render_window.update_status_logger) # Status logger of the progress bar.
-        
+        self.render_thread.signal_archive_count_message.connect(self.render_window.update_archive_count)
+        self.render_thread.signal_status_message.connect(self.render_window.update_status_message)
+        self.render_thread.signal_timer_start.connect(self.render_window.timer_start)
+        self.render_thread.signal_timer_stop.connect(self.render_window.timer_stop)
         # self.render_thread.signal_status.connect(self.handle_render_error)
         # self.render_thread.signal_processed.connect(self.update_info)
 
@@ -108,5 +111,3 @@ class Controller():
         self.file_manager.close_ffmpeg_process()
         QThread.msleep(100) # Wait for the process to close.
         self.file_manager.delete_temp_files()
-
-

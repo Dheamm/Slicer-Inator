@@ -6,6 +6,8 @@ from PyQt5.QtCore import Qt # To set the alignment of the labels.
 from PyQt5.QtGui import QIcon # To set the icon.
 from PyQt5.QtCore import QSize # To set the size of the icon.
 from PyQt5.QtCore import pyqtSignal # To create signals.
+from PyQt5.QtCore import QTime 
+from PyQt5.QtCore import QTimer # To create a timer.
 
 # Local Classes:
 from Interface.Window import Window # Import Window local class
@@ -18,6 +20,10 @@ class RenderWindow(Window):
     def __init__(self, data_json):
         super().__init__(data_json)
         self.__data_json = data_json
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update_time_message)
+        self.seconds_timer = 0
+
         self._setup_ui()
 
     def _setup_ui(self):
@@ -52,18 +58,17 @@ class RenderWindow(Window):
         secondary_layouts[1].addWidget(self.lbl_status_logger, 1, 0, alignment=Qt.AlignCenter)
         self.lbl_status_logger.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
 
-        lbl_time = super().label_settings((200, 50), 'Time : 01:15', 'Time Elapsed', font_size=12)
-        secondary_layouts[2].addWidget(lbl_time, 0, 0, alignment=Qt.AlignLeft)
-        lbl_time.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
+        self.lbl_time = super().label_settings((200, 50), 'Time : 00:00:00', 'Time Elapsed', font_size=12)
+        secondary_layouts[2].addWidget(self.lbl_time, 0, 0, alignment=Qt.AlignLeft)
+        self.lbl_time.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
 
-        lbl_archive_count = super().label_settings((200, 50), 'Archives 5 / 10', 'Archive Count', font_size=12)
-        secondary_layouts[2].addWidget(lbl_archive_count, 0, 0, alignment=Qt.AlignRight)
-        lbl_archive_count.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
+        self.lbl_archive_count = super().label_settings((200, 50), 'Archives 0 / 0', 'Archive Count', font_size=12)
+        secondary_layouts[2].addWidget(self.lbl_archive_count, 0, 0, alignment=Qt.AlignRight)
+        self.lbl_archive_count.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
 
-        lbl_status_message = super().label_settings((470, 50), 'Status: Rendering...', 'Status Message', font_size=12)
-        secondary_layouts[2].addWidget(lbl_status_message, 1, 0, alignment=Qt.AlignCenter)
-        lbl_status_message.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
-        
+        self.lbl_status_message = super().label_settings((470, 50), 'Status: None', 'Status Message', font_size=12)
+        secondary_layouts[2].addWidget(self.lbl_status_message, 1, 0, alignment=Qt.AlignCenter)
+        self.lbl_status_message.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
 
         self.btn_start = super().button_settings((160, 50), 'Start', 'Press to start to render.', font_size=14)
         secondary_layouts[3].addWidget(self.btn_start, 0, 0, alignment=Qt.AlignCenter)
@@ -102,6 +107,10 @@ class RenderWindow(Window):
         self.progress_bar.setTextVisible(False)
         self.update_progress_bar(0)
 
+        self.update_status_logger(0,0)
+        self.lbl_time.setText("00:00:00")
+        self.update_archive_count(0,0)
+        self.update_status_message("Status: None")
 
         self.stop_rendering_signal.emit(True)
 
@@ -110,5 +119,41 @@ class RenderWindow(Window):
         self.progress_bar.setValue(value)
         self.progress_bar.update()
 
-    def update_status_logger(self, curren_value, total_value):
+    def update_status_logger(self, curren_value: int, total_value: int):
         self.lbl_status_logger.setText(f'{curren_value} / {total_value}')
+        self.lbl_status_logger.update()
+    
+    def timer_start(self):
+        """Start the timer."""
+        self.seconds_timer = 0
+        self.timer.start(1000)
+
+    def timer_stop(self):
+        """Stop the timer and reset the seconds."""
+        self.timer.stop()
+
+    # def timer_switch(self, state: bool):
+    #     """Switch the timer state."""
+    #     if state:
+    #         self.timer.start(1000)  # Start the timer with a 1 second interval
+    #     else:
+    #         self.timer.stop()
+    #         self.lbl_time.setText('Time : 00:00:00')
+    #         self.seconds_timer = 0
+
+    def update_time_message(self):
+        """Update the time label with the given seconds."""
+        self.seconds_timer += 1
+        tiempo = QTime(0, 0).addSecs(self.seconds_timer)
+        self.lbl_time.setText(f'Time : {tiempo.toString("hh:mm:ss")}')
+        self.lbl_time.update()
+
+    def update_archive_count(self, current: int, total: int):
+        """Update the archive count label with the current and total values."""
+        self.lbl_archive_count.setText(f'Archives {current} / {total}')
+        self.lbl_archive_count.update()
+
+    def update_status_message(self, message: str):
+        """Update the status message label."""
+        self.lbl_status_message.setText(message)
+        self.lbl_status_message.update()

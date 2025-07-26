@@ -47,10 +47,10 @@ class MainWindow(Window):
         btn_close.setIconSize(QSize(42, 42))
         btn_close.clicked.connect(lambda: self.close())
 
-        lbl_input = super().label_settings((380, 50), (rf'Input │ Default'), '', font_size=10)
+        lbl_input = super().label_settings((350, 50), (rf'Input │ Default'), '', font_size=10)
         secondary_layouts[1].addWidget(lbl_input, 0, 0, alignment=Qt.AlignCenter)
 
-        lbl_output = super().label_settings((380, 50), (rf'Output │ Default'), '', font_size=10)
+        lbl_output = super().label_settings((350, 50), (rf'Output │ Default'), '', font_size=10)
         secondary_layouts[1].addWidget(lbl_output, 1, 0, alignment=Qt.AlignCenter)
 
         btn_input = super().button_settings((50, 50), '', 'Press to open the input path.', font_size=0)

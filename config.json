@@ -1,13 +1,13 @@
 {
     "theme": "dark",
     "font": "Arial",
-    "duration": 15,
+    "duration": 3,
     "clip_limit": 10,
     "transitions": 0.5,
     "overlay": "off",
     "output_name": "Pepe",
     "format": ".avi",
-    "render_type": "Compact",
+    "render_type": "Separated",
     "fps": 60,
     "bitrate": 16000,
     "threads": 4

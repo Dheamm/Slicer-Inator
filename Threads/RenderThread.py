@@ -18,6 +18,12 @@ class RenderThread(QThread):
     signal_status_logger = pyqtSignal(int, int)
     signal_color_bar = pyqtSignal(str)
 
+    signal_name_message = pyqtSignal(str)
+    signal_status_message = pyqtSignal(str)
+    signal_timer_start = pyqtSignal()
+    signal_timer_stop = pyqtSignal()
+    signal_archive_count_message = pyqtSignal(int, int)
+
     def __init__(self, file_manager, slicer, settings_controller):
         super().__init__()
         self.file_manager = file_manager
@@ -26,7 +32,7 @@ class RenderThread(QThread):
 
     def show_status(self, status:str):
         '''Show the status info and send to the render window.'''
-        self.signal_processed.emit('status', status)
+        self.signal_status_message.emit(status)
         print(status)
 
     def run(self):
@@ -37,7 +43,7 @@ class RenderThread(QThread):
 
             path = self.file_manager.get_input_path()
             valid_files = self.file_manager.get_method('valid_files_list')
-            if not path:
+            if self.file_manager.get_output_path() is None:
                 self.file_manager.create_output_path()
             output_path = self.file_manager.get_output_path()
             reporter = Reporter(output_path)
@@ -53,14 +59,16 @@ class RenderThread(QThread):
                     total_disk, used_disk, free_disk = self.file_manager.get_method('disk_space')
 
                     # -- FLOW -- #
-                    self.signal_processed.emit('name', f'Name: {file}')
+
+                    self.signal_name_message.emit(file)
                     if index == 1:
-                        self.signal_processed.emit('processed', f'{0}/{len(valid_files)} clips processed.')
                         print(f'{0}/{len(valid_files)} clips processed.')
                     print(f'Name: {file}')
+                    self.signal_archive_count_message.emit(index, len(valid_files))
 
                     try:
-                        timer_start = time()
+                        self.signal_timer_start.emit()
+                        timer_static_start = time()
                         self.show_status(f'Clip {index} timer started.')
 
                         # LOAD
@@ -106,18 +114,20 @@ class RenderThread(QThread):
                             # RENDER
                             self.slicer.render_clip(clips_list[index-1-errors], renamer.file_name(path, file), output_path)
                             self.show_status(f'Clip {index} has been rendered.')
-
-                        timer_end = time()
+                        
+                        self.signal_timer_stop.emit()
+                        timer_static_end = time()
                         self.show_status(f'Clip {index} timer ended.')
 
-                        total_time = int(timer_end - timer_start)
-                        print(f'Time: {total_time} seconds.\n')
-                        self.signal_processed.emit('time', f'Time: {total_time} seconds.')
+                        total_static_time = int(timer_static_end - timer_static_start)
+
+                        print(f'Time: {total_static_time} seconds.\n')
+
 
                         # Update report file.
                         reporter.file_update(clip_number=index, original_name=file, delete_original=False,
                         renamed=renamer.file_name(path, file), game=renamer.game_pattern(), date=renamer.date_pattern(path, file), 
-                        time=total_time, total_disk=total_disk, used_disk=used_disk, free_disk=free_disk)
+                        time=total_static_time, total_disk=total_disk, used_disk=used_disk, free_disk=free_disk)
                         self.show_status(f'Report file has been updated.')
 
                     except OSError as error:
