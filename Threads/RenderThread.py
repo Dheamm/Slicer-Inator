@@ -37,7 +37,8 @@ class RenderThread(QThread):
 
             path = self.file_manager.get_input_path()
             valid_files = self.file_manager.get_method('valid_files_list')
-            self.file_manager.create_output_path()
+            if not path:
+                self.file_manager.create_output_path()
             output_path = self.file_manager.get_output_path()
             reporter = Reporter(output_path)
             reporter.file_creation()

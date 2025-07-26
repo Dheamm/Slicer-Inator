@@ -16,7 +16,7 @@ class MainWindow(Window):
 
     theme_applied_signal = pyqtSignal(str)
     open_directory_signal = pyqtSignal(str)
-    change_directory_signal = pyqtSignal(str, str)
+    select_directory_signal = pyqtSignal(str)
 
     def __init__(self, data_json):
         super().__init__(data_json)
@@ -47,10 +47,10 @@ class MainWindow(Window):
         btn_close.setIconSize(QSize(42, 42))
         btn_close.clicked.connect(lambda: self.close())
 
-        lbl_input = super().label_settings((380, 50), (r'Input │ C:\Users\Dheam\Downloads'), '', font_size=10)
+        lbl_input = super().label_settings((380, 50), (rf'Input │ Default'), '', font_size=10)
         secondary_layouts[1].addWidget(lbl_input, 0, 0, alignment=Qt.AlignCenter)
 
-        lbl_output = super().label_settings((380, 50), (r'Output │ C:\Users\Dheam\Downloads'), '', font_size=10)
+        lbl_output = super().label_settings((380, 50), (rf'Output │ Default'), '', font_size=10)
         secondary_layouts[1].addWidget(lbl_output, 1, 0, alignment=Qt.AlignCenter)
 
         btn_input = super().button_settings((50, 50), '', 'Press to open the input path.', font_size=0)
@@ -67,11 +67,11 @@ class MainWindow(Window):
 
         btn_search_input = super().button_settings((50, 50), '...', 'Press to select the input path.', font_size=14)
         secondary_layouts[1].addWidget(btn_search_input, 0, 0, alignment=Qt.AlignRight)
-        btn_search_input.clicked.connect(lambda: self.change_directory('input_path'))
+        btn_search_input.clicked.connect(lambda: self.select_directory_signal.emit('input_path'))
 
         btn_search_output = super().button_settings((50, 50), '...', 'Press to select the output path.', font_size=14)
         secondary_layouts[1].addWidget(btn_search_output, 1, 0, alignment=Qt.AlignRight)
-        btn_search_output.clicked.connect(lambda: self.change_directory('output_path'))
+        btn_search_output.clicked.connect(lambda: self.select_directory_signal.emit('output_path'))
 
         btn_slice = super().button_settings((160, 50), 'SLICE NOW', 'Press to open the Render Window.', font_size=14)
         secondary_layouts[2].addWidget(btn_slice, 0, 0, alignment=Qt.AlignCenter)
@@ -93,11 +93,8 @@ class MainWindow(Window):
 
         self.theme_applied_signal.emit(self.__data_json['theme'])
 
-    def change_directory(self, directory_type:str):
-        new_path = QFileDialog.getExistingDirectory(self, 'Select the directory of the clips', 
-                                                    self.__data_json.get(directory_type))
-        print(f"New path selected for {directory_type}: {new_path}")
-        
+    def select_directory(self, directory:str):
+        new_path = QFileDialog.getExistingDirectory(self, 'Select the directory of the clips', directory)
         if new_path:
-            self.__data_json[directory_type] = new_path
-            self.change_directory_signal.emit(directory_type, new_path)
+            print(f"New path selected {new_path}")
+            return new_path

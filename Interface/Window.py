@@ -20,7 +20,7 @@ from PyQt5.QtWidgets import QProgressBar # To create progress bars.
 from PyQt5.QtCore import pyqtSignal
 import os
 from PyQt5.QtCore import QDir
-
+from PyQt5.QtWidgets import QMessageBox # To show message boxes
 class Window(QMainWindow):
     def __init__(self, data_json):
         super().__init__()
@@ -222,3 +222,11 @@ class Window(QMainWindow):
         """)
         cb.setToolTip(tooltip)
         return cb
+
+    def message_box_settings(self, title:str, message:str, icon_type=QMessageBox.Information):
+        '''Method to configure the message boxes.'''
+        msg_box = QMessageBox(self)
+        msg_box.setWindowTitle(title)
+        msg_box.setText(message)
+        msg_box.setIcon(icon_type)
+        return msg_box.exec_()

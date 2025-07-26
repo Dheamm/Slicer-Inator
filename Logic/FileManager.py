@@ -25,7 +25,6 @@ class FileManager():
         return cls._instance
 
     def __init__(self,
-                input_path=None,
                 video_formats:tuple = ('.mp4', '.avi', '.mov', '.mkv', '.flv'),
                 output_path=None,
                 directory_output_name='Sliced'):
@@ -52,12 +51,7 @@ class FileManager():
 
     def get_output_path(self):
         '''Get the output path.'''
-        if self.search_directory(self.get_input_path(), self.get_directory_output_name()):
-            self.set_output_path(join(self.get_input_path(), self.get_directory_output_name()))
-            return self.__output_path
-        else:
-            raise ValueError('The output path is not set.')
-            
+        return self.__output_path
 
     def set_output_path(self, new_path):
         '''Set the output path.'''
@@ -163,14 +157,13 @@ class FileManager():
         '''Check if the directory exists.'''
         return (self.home_dir()/directory).exists()
 
-    def base_directory(self, directory:str='Videos/Prueba'):
+    def base_directory(self, directory:str='Videos'):
         '''Get the base or main directory.'''
         if not self.dir_exists(directory):
             return self.home_dir()
         else:
             return self.home_dir()/directory
-
-
+        
     def get_method(self, method_type):
         '''Get the value of the methods.'''
         if method_type == 'list':
