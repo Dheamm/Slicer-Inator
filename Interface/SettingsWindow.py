@@ -114,6 +114,15 @@ class SettingsWindow(Window):
         secondary_layouts[2].addWidget(self.cb_render_type, 3, 1, alignment=Qt.AlignLeft)
         #tooltip en los items del combobox
 
+        lbl_delete_original = super().label_settings((150, 50), 'Delete original:', 'Delete Original Files', font_size=10)
+        secondary_layouts[2].addWidget(lbl_delete_original, 4, 0, alignment=Qt.AlignRight)
+        lbl_delete_original.setStyleSheet(f"QLabel {{border: 2px solid lightgrey;}}")
+
+        delete_original_items = ['on', 'off']
+        self.cb_delete_original = super().combobox_settings((150, 50), 'Select whether to delete original files after rendering.', delete_original_items)
+        CurrentIndexChanged(self.cb_delete_original, self.__data_json.get("delete_original"), delete_original_items)
+        secondary_layouts[2].addWidget(self.cb_delete_original, 4, 1, alignment=Qt.AlignLeft)
+
 
         # Video Settings:
 
@@ -150,6 +159,7 @@ class SettingsWindow(Window):
             ("output_name", self.txt_output_name, "lineedit"),
             ("format", self.cb_format, "combobox"),
             ("render_type", self.cb_render_type, "combobox"),
+            ("delete_original", self.cb_delete_original, "combobox"),
             ("fps", self.txt_fps, "lineedit"),
             ("bitrate", self.txt_bitrate, "lineedit"),
             ("threads", self.txt_threads, "lineedit")

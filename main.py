@@ -58,6 +58,7 @@ if __name__ == '__main__':
 # Todo: Audio on off opciones
 
 #Errors:
+# Todo: Cuando ve un archivo sin extension crashea.
 # Todo: A veces el al cerrar forzamente el programa con el pid del proceso si este ya se cerró antes da error. (meterle un try)
 # Todo: Cuando se borra un reporte del programa ejecutandose (y dicho reporte sea de la ejecucion) se crashea.
 # Todo: El boton de set de clip limit si no agregas nada se crashea, hay que bloquearlo.
@@ -68,6 +69,12 @@ if __name__ == '__main__':
 # Todo: Cuando cierras la ventana de settings la de render queda bloqueada.
 
 # Funionalities:
+# Todo: Agregar la opcin de solo renderizar por ejemplo para cuando primero se hace por separado. y luego en otro proceso juntarlo.
+# Todo: Agregar un timer con el tiempo total de todo el proceso.
+# Todo: Agregar posibilidad de poder renderizar en x2 o x3 velocidad (o mas).
+# Todo: Agregar detalles o metadatos al video de salida, como el nombre del clip, fecha, hora, etc.
+# Todo: Numerar los clips en el nombre sin contar los corruptos o los errores.
+# Todo: Si el video dura lo mismo que el tiempo de corte, que no corte nada o si dura menos, pero que esto sea una opcion ya que igual sirve el render.
 # Todo: No se pueden poner decimales en las transiciones
 # Todo: Que el programa sea compatible con todos los formatos de ffmpeg y no solo con la lista de file_manager.
 # Todo: Que al poner el limite de clips en 0 o -1 se rendericen todos los clips.
@@ -94,5 +101,7 @@ if __name__ == '__main__':
 # Todo: Usar SQL y de esa forma poder hacer consultas mas complejas y poder continuar el proceso si se cierra la aplicación.
 
 # Possible:
+# Todo: RenderThread es un jeroglífico, necesita refactorizarse.
+# Todo: Revisar si es conveniente hacer algunas clases estaticas.
 # Todo: Si existe un reporte.csv borrarlo y crear uno nuevo. (Opción de borrarlo para el usuario)
 # Todo: Refactorizar renamer y también las ventanas que reciben como parametros en el constructor el objeto slicer y file_manager.

@@ -141,9 +141,9 @@ class RenderThread(QThread):
                         errors += 1
                         continue
 
-                    # if self.data_json.get_json("delete_original") == "on":
-                    #     self.file_manager.delete_original_files(file)
-                    #     self.show_status(f'Original file {file} has been deleted.')
+                    if self.data_json.get_json("delete_original") == "on" and self.data_json.get_json("render_type") == "Separated":
+                        self.file_manager.delete_original_files(file)
+                        self.show_status(f'Original file {file} has been deleted.')
 
                     print(f'{index}/{len(valid_files)} clips processed.')
                     QThread.msleep(1000)
@@ -160,6 +160,15 @@ class RenderThread(QThread):
                 # RENDER
                     self.slicer.render_clip(concatenate_clips, (f'{renamer.game_pattern()} - TotalClips({len(clips_list)})'), output_path)
                     self.show_status(f'Clip {index} has been rendered.')
+
+                if self.data_json.get_json("delete_original") == "on" and self.data_json.get_json("render_type") == "Compact":
+                    for file in valid_files:
+                        try:
+                            self.file_manager.delete_original_files(file)
+                            self.show_status(f'Original file {file} has been deleted.')
+                        except OSError as error:
+                            self.show_status(f'Error! Deleting file: {file}')
+                            continue
 
             except OSError as error:
                 self.show_status(f'Error! In the render process.')

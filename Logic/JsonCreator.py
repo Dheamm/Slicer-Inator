@@ -28,11 +28,11 @@ class JsonCreator():
             "output_name": "disabled",
             "format": ".mp4",
             "render_type": "compact",
+            "delete_original": "off",
 
             "fps": 60,
             "bitrate": 16000,
-            "threads": 4,
-            "delete_original": "off",
+            "threads": 4
         }
 
             path.write_text(json.dumps(default_data, indent=4))
