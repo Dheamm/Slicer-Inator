@@ -26,7 +26,7 @@ class Controller():
             self.main_window.labels[1].setText(f'Output │ {self.file_manager.get_output_path()}')
             self.main_window.buttons[3].setEnabled(True)
         else:
-            self.main_window.labels[1].setText(f'Output │ No Selected(Default)')
+            self.main_window.labels[1].setText(f'Output │ No Selected (Default)')
             self.main_window.buttons[3].setEnabled(False) # Disable the button if the output path is not set.
 
         self.render_window = RenderWindow(self.data_json)

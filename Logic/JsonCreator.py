@@ -31,7 +31,8 @@ class JsonCreator():
 
             "fps": 60,
             "bitrate": 16000,
-            "threads": 4
+            "threads": 4,
+            "delete_original": "off",
         }
 
             path.write_text(json.dumps(default_data, indent=4))

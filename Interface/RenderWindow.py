@@ -27,7 +27,7 @@ class RenderWindow(Window):
         self._setup_ui()
 
     def _setup_ui(self):
-        super().window_settings((550, 480), 'SlicerInator - Render')
+        super().window_settings((550, 580), 'SlicerInator - Render')
         self.setWindowIcon(QIcon('Interface/Images/play.png'))
 
         # Layouts:

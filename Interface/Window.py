@@ -60,7 +60,7 @@ class Window(QMainWindow):
     def main_layout_settings(self, margins_geometry:tuple[int,int,int,int]=(20,0,20,0), spacing:int=0):
         main_layout = QVBoxLayout(self.main_widget)
         main_layout.setContentsMargins(*margins_geometry)
-        main_layout.setSpacing(spacing)
+        main_layout.setSpacing(10)
 
         return main_layout
 
@@ -70,7 +70,7 @@ class Window(QMainWindow):
         for i in range(number):
             widget = QWidget()
             layout = QGridLayout(widget)
-            layout.setContentsMargins(20, 10, 20, 10)
+            layout.setContentsMargins(20, 20, 20, 20)
             layout.setSpacing(10)
 
             horizontal_layouts.append(layout)
@@ -83,6 +83,15 @@ class Window(QMainWindow):
                         border-radius: 10px;  /* Round Borders */
                         padding: 10px;        /* Space between content */
                     }}""")
+
+            # if number == 4:
+            #     if i == 2:
+            #         widget.setStyleSheet(f"""
+            #         QWidget {{
+            #             border-radius: 10px;  /* Round Borders */
+            #             border-top: none;
+            #             padding: 10px;        /* Space between content */
+            #         }}""")
 
             main_layout.addWidget(widget)
             main_layout.setStretch(i, 1)

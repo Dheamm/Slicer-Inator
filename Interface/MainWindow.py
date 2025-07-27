@@ -24,7 +24,7 @@ class MainWindow(Window):
         self._setup_ui()
 
     def _setup_ui(self):
-        super().window_settings((550, 280), 'SlicerInator')
+        super().window_settings((550, 350), 'SlicerInator')
 
         main_layout = super().main_layout_settings()
         secondary_layouts = super().create_secondary_layout(main_layout, 3)

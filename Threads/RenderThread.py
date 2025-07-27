@@ -24,11 +24,11 @@ class RenderThread(QThread):
     signal_timer_stop = pyqtSignal()
     signal_archive_count_message = pyqtSignal(int, int)
 
-    def __init__(self, file_manager, slicer, settings_controller):
+    def __init__(self, file_manager, slicer, data_json):
         super().__init__()
         self.file_manager = file_manager
         self.slicer = slicer
-        self.settings_controller = settings_controller
+        self.data_json = data_json
 
     def show_status(self, status:str):
         '''Show the status info and send to the render window.'''
@@ -53,7 +53,7 @@ class RenderThread(QThread):
 
             for index, file in enumerate(valid_files):
                 index += 1
-                if self.settings_controller.get_json("clip_limit") >= index:
+                if self.data_json.get_json("clip_limit") >= index:
 
                     renamer = Renamer(file, index)
                     total_disk, used_disk, free_disk = self.file_manager.get_method('disk_space')
@@ -81,12 +81,12 @@ class RenderThread(QThread):
 
                         # OVERLAY TEXT
                         overlay_text = slice_clip
-                        if self.settings_controller.get_json("overlay")!= "off":
+                        if self.data_json.get_json("overlay")!= "off":
                             overlay_text = self.slicer.overlay_text(slice_clip, renamer.file_name(path, file))
                             self.show_status(f'Overlay text has been added in the clip {index}.')
 
                         # TRANSITIONS
-                        if self.settings_controller.get_json("transitions") != 0:
+                        if self.data_json.get_json("transitions") != 0:
                             if index == 1: # First clip.
                                 transition = self.slicer.transition_fade_out(overlay_text)
                                 self.show_status(f'Fading-out transition added in the clip {index}.')
@@ -110,7 +110,7 @@ class RenderThread(QThread):
                         else:
                             clips_list.append(overlay_text)
 
-                        if self.settings_controller.get_json("render_type") == "Separated":
+                        if self.data_json.get_json("render_type") == "Separated":
                             # RENDER
                             self.slicer.render_clip(clips_list[index-1-errors], renamer.file_name(path, file), output_path)
                             self.show_status(f'Clip {index} has been rendered.')
@@ -125,7 +125,7 @@ class RenderThread(QThread):
 
 
                         # Update report file.
-                        reporter.file_update(clip_number=index, original_name=file, delete_original=False,
+                        reporter.file_update(clip_number=index, original_name=file, delete_original=self.data_json.get_json("delete_original"),
                         renamed=renamer.file_name(path, file), game=renamer.game_pattern(), date=renamer.date_pattern(path, file), 
                         time=total_static_time, total_disk=total_disk, used_disk=used_disk, free_disk=free_disk)
                         self.show_status(f'Report file has been updated.')
@@ -141,20 +141,18 @@ class RenderThread(QThread):
                         errors += 1
                         continue
 
-                    # if self.btn_toggle_delete.isChecked():
-                    #     self.file_manager.delete_original_files(file)
-                    #     self.show_status(f'Original file {file} has been deleted.')
+                    if self.data_json.get_json("delete_original") == "on":
+                        self.file_manager.delete_original_files(file)
+                        self.show_status(f'Original file {file} has been deleted.')
 
-                    # self.signal_processed.emit('processed', f'{index}/{len(valid_files)} clips processed.')
-                    # print(f'{index}/{len(valid_files)} clips processed.')
-                    # self.signal_processed.emit('hide', None)
-                    # QThread.msleep(1000)
+                    print(f'{index}/{len(valid_files)} clips processed.')
+                    QThread.msleep(1000)
 
                 else:
-                    self.show_status(f'Clips limit reached ({self.settings_controller.get_json("clip_limit")}).')
+                    self.show_status(f'Clips limit reached ({self.data_json.get_json("clip_limit")}).')
 
             try:
-                if self.settings_controller.get_json("render_type") == "Compact":
+                if self.data_json.get_json("render_type") == "Compact":
                 # CONCATENATE
                     concatenate_clips = self.slicer.concatenate_clips(clips_list)
                     self.show_status(f'Clip {index} has been concatenated.')

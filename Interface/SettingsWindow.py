@@ -26,7 +26,7 @@ class SettingsWindow(Window):
         self._setup_ui()
 
     def _setup_ui(self):
-        super().window_settings((400, 800), 'SlicerInator - Settings')
+        super().window_settings((400, 1000), 'SlicerInator - Settings')
         self.setWindowIcon(QIcon('Interface/Images/settings.png'))
         
         # Layouts:
