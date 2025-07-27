@@ -17,9 +17,7 @@ from PyQt5.QtWidgets import QCheckBox # To create checkboxes
 from PyQt5.QtWidgets import QLabel # To create labels.
 from PyQt5.QtGui import QColor # To set the color.
 from PyQt5.QtWidgets import QProgressBar # To create progress bars.
-from PyQt5.QtCore import pyqtSignal
 import os
-from PyQt5.QtCore import QDir
 from PyQt5.QtWidgets import QMessageBox # To show message boxes
 class Window(QMainWindow):
     def __init__(self, data_json):

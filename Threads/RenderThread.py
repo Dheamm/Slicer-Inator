@@ -141,9 +141,9 @@ class RenderThread(QThread):
                         errors += 1
                         continue
 
-                    if self.data_json.get_json("delete_original") == "on":
-                        self.file_manager.delete_original_files(file)
-                        self.show_status(f'Original file {file} has been deleted.')
+                    # if self.data_json.get_json("delete_original") == "on":
+                    #     self.file_manager.delete_original_files(file)
+                    #     self.show_status(f'Original file {file} has been deleted.')
 
                     print(f'{index}/{len(valid_files)} clips processed.')
                     QThread.msleep(1000)
