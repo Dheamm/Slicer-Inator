@@ -21,11 +21,11 @@ class JsonCreator():
             "font": "Arial",
 
             "duration": 45,
-            "clip_limit": 10,
-            "transitions": 3,
-            "overlay": "off",
+            "clip_limit": 10000,
+            "transitions": 0.5,
+            "overlay": "left-bottom",
 
-            "output_name": "compact_video",
+            "output_name": "disabled",
             "format": ".mp4",
             "render_type": "compact",
 

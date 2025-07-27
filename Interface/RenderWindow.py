@@ -115,6 +115,8 @@ class RenderWindow(Window):
         self.lbl_time.setText("00:00:00")
         self.update_archive_count(0,0)
         self.update_status_message("Status: None")
+        self.update_name_message("None")
+        self.timer_stop()
 
         self.stop_rendering_signal.emit(True)
 

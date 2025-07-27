@@ -45,7 +45,8 @@ if __name__ == '__main__':
 # Todo: Tener una clase controlador (Al estilo MVC (Model-View-Controller)) que maneje los atributos de settings y centralizarlo ahí, tener las rutas y otras cosas y que esta sea singelton.
 
 #Interface:
-# TodoL Que la interfaz sea responsive.
+# Todo: Cambiar los hilos hace que crashee derrepente wtf men.
+# Todo: Que la interfaz sea responsive.
 # Todo: Hacer un modo oscuro
 # Todo: Que la barra sea mas precisa (y real).
 # Todo: Embellecer la interfaz grafica.
@@ -57,6 +58,8 @@ if __name__ == '__main__':
 # Todo: Audio on off opciones
 
 #Errors:
+# Todo: A veces el al cerrar forzamente el programa con el pid del proceso si este ya se cerró antes da error. (meterle un try)
+# Todo: Cuando se borra un reporte del programa ejecutandose (y dicho reporte sea de la ejecucion) se crashea.
 # Todo: El boton de set de clip limit si no agregas nada se crashea, hay que bloquearlo.
 # Todo: Si en settings ingresan valores invalidos controlarlos.
 # Todo: Hay situaciones (sobre todo cuando el render tira una excepción) que el ciclo de la barra sigue.
@@ -65,6 +68,9 @@ if __name__ == '__main__':
 # Todo: Cuando cierras la ventana de settings la de render queda bloqueada.
 
 # Funionalities:
+# Todo: No se pueden poner decimales en las transiciones
+# Todo: Que el programa sea compatible con todos los formatos de ffmpeg y no solo con la lista de file_manager.
+# Todo: Que al poner el limite de clips en 0 o -1 se rendericen todos los clips.
 # Todo ¡¡Agregar el toggledelete nuevamente!!, que borre el archivo original si se corta correctamente.
 # Todo: Poder hacer la ventana mas grande o pequeña pero con botones para tener presets.
 # Todo: Cambiar la estetica de la barra de progreso.

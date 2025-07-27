@@ -12,12 +12,12 @@ from Logic.JsonCreator import JsonCreator # Import JsonCreator local class.
 class Controller():
     def __init__(self):
         self.json_creator = JsonCreator()
+        self.json_creator.create_json()
         self.data_json = self.json_creator.get_full_json()
 
-
         self.file_manager = FileManager()
-        self.slicer = Slicer(self.data_json['duration'],
-                            self.data_json['transitions'])
+        self.slicer = Slicer(self.json_creator.get_json('duration'),
+                            self.json_creator.get_json('transitions'))
         self.render_thread = RenderThread(self.file_manager, self.slicer, self.json_creator)
 
         self.main_window = MainWindow(self.data_json)
@@ -64,12 +64,21 @@ class Controller():
                 value = int(value)
             self.json_creator.set_json(key, value)
 
+        self.slicer.set_duration(self.json_creator.get_json('duration'))
+        self.slicer.set_transition_duration(self.json_creator.get_json('transitions'))
+        self.slicer.set_text_position(self.json_creator.get_json('overlay'))
+        self.slicer.set_fps(self.json_creator.get_json('fps'))
+        self.slicer.set_bitrate(self.json_creator.get_json('bitrate'))
+        self.slicer.set_threads(self.json_creator.get_json('threads'))
+        self.slicer.set_video_format(self.json_creator.get_json('format'))
+
     def handle_applied_theme(self, theme: str):
         print(f"Theme applied: {theme}")
         self.json_creator.set_json('theme', theme)
         self.main_window.load_theme(theme)
         self.render_window.load_theme(theme)
         self.settings_window.load_theme(theme)
+
 
     def handle_open_directory(self, directory_type: str):
         if directory_type == 'input_path':

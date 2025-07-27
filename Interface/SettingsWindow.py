@@ -75,7 +75,7 @@ class SettingsWindow(Window):
                     widget.setCurrentIndex(i)
                     break
 
-        overlay_items = ['off','up-Left', 'Left', 'down-Left', 'up', 'center', 'down', 'up-right', 'right', 'down-right']    
+        overlay_items = ['off','left-top', 'left-center', 'left-bottom', 'center-top', 'center-center', 'center-bottom', 'right-top', 'right-center', 'right-bottom']    
         self.cb_overlay = super().combobox_settings((150, 50), 'Select position of overlay.', overlay_items)
         CurrentIndexChanged(self.cb_overlay, self.__data_json.get("overlay"), overlay_items)
         secondary_layouts[1].addWidget(self.cb_overlay, 4, 1, alignment=Qt.AlignLeft)
@@ -88,6 +88,7 @@ class SettingsWindow(Window):
 
         self.txt_output_name = super().input_settings((150, 50), 'str', placeholder=f'{self.__data_json.get("output_name")}', tooltip='Set the name of the output file.')
         secondary_layouts[2].addWidget(self.txt_output_name, 1, 1, alignment=Qt.AlignLeft)
+        self.txt_output_name.setEnabled(False)  # Disable editing the output name
 
         lbl_format = super().label_settings((150, 50), 'Format:', 'Format', font_size=10)
         secondary_layouts[2].addWidget(lbl_format, 2, 0, alignment=Qt.AlignRight)
